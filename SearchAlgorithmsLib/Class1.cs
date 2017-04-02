@@ -11,6 +11,8 @@ namespace SearchAlgorithmsLib
         private List<State<T>> solution;
         public List<State<T>> getSolution() { return solution; }
     }
+//test
+
     public class State<T>
     {
     private T state;    // the state represented by a string
