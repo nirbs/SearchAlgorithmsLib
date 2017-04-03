@@ -15,7 +15,7 @@ namespace SearchAlgorithmsLib
     public class State<T>
     {
     private T state;    // the state represented by a T
-    //private double cost;    // cost to reach this state (set by a setter)
+    private double cost;    // cost to reach this state (set by a setter)
     private State<T> cameFrom;    // the state we came from to this state (setter)
     public State(T state)   // CTOR
     {
@@ -113,7 +113,7 @@ namespace SearchAlgorithmsLib
     public class MazeSearchable : Searchable<MazeLib.Position>
     {
         private MazeLib.Maze myMaze;
-        public MazeSearchable(State<MazeLib.Position> initial, State<MazeLib.Position> goal) : base(initial, goal) { };
+        public MazeSearchable(State<MazeLib.Position> initial, State<MazeLib.Position> goal) : base(initial, goal) { }
         public override List<State<MazeLib.Position>> getAllPossibleStates(State<MazeLib.Position> s)
         {
             int x = s.getState().Col;
@@ -165,7 +165,7 @@ namespace SearchAlgorithmsLib
             {
                 State<T> n = popOpenList(); // inherited from Searcher, removes the best state
                 closed.Add(n);
-                if (n.Equals(searchable.getIGoallState()))
+                if (n.Equals(searchable.getGoalState()))
                     return backTrace(); // private method, back traces through the parents
                                         // calling the delegated method, returns a list of states with n as a parent
                 List<State<T>> succerssors = searchable.getAllPossibleStates(n);
