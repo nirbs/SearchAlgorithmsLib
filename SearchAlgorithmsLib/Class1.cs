@@ -223,7 +223,12 @@ namespace SearchAlgorithmsLib
             {
                 current = beingChecked.Pop();
                 updateNodesEvaluated();
-
+                if (current.Equals(searchable.getGoalState()))
+                {
+                    return backTrace(current);
+                }
+                    
+            
                 if (!discovered.Contains(current))
                 {
                     discovered.Add(current);
@@ -234,7 +239,9 @@ namespace SearchAlgorithmsLib
                     }
 
                 }
+
             }
+            return null;
         }
         
     }

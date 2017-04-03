@@ -10,7 +10,9 @@ namespace ObjectAdapter
     {
         static void Main(string[] args)
         {
-
+            Program p = new Program();
+            p.CompareSolvers();
+            Console.Read();
         }
 
         public void CompareSolvers()
@@ -19,18 +21,11 @@ namespace ObjectAdapter
 
             MazeGeneratorLib.DFSMazeGenerator mazeGenerator = new MazeGeneratorLib.DFSMazeGenerator();
             MazeLib.Maze mazush =  mazeGenerator.Generate(30, 30);
-            String s = mazush.ToString();
-            int count = 0;
+            string s = mazush.ToString();
+
             //prints maze
-            for (int i=0; i<mazush.Rows; i++)
-            {
-                for (int j=0; j < mazush.Cols; j++)
-                {
-                    Console.Write(s[count]);
-                    count++;
-                }
-                Console.WriteLine();
-            }
+            Console.Write(s);
+            
             //solves in BFS
             SearchAlgorithmsLib.State<MazeLib.Position> entrance = new SearchAlgorithmsLib.State<MazeLib.Position>(mazush.InitialPos);
             SearchAlgorithmsLib.State<MazeLib.Position> exit = new SearchAlgorithmsLib.State<MazeLib.Position>(mazush.GoalPos);
