@@ -9,33 +9,32 @@ namespace SearchAlgorithmsLib
     public class Solution<T>
     {
         private List<State<T>> solution;
-        public List<State<T>> getSolution() { return solution; }
+        //public List<State<T>> getSolution() { return solution; }
+        public List<State<T>> sol { get; set; }
     }
 
     public class State<T>
     {
-    private T state;    // the state represented by a T
-    private double cost;    // cost to reach this state (set by a setter)
-    private State<T> cameFrom;    // the state we came from to this state (setter)
-    public State(T state)   // CTOR
-    {
-        this.state= state;
+        private T state;    // the state represented by a T
+        private double cost;    // cost to reach this state (set by a setter)
+        private State<T> cameFrom;    // the state we came from to this state (setter)
+        public State<T> CameFrom { get; set; }
+        public State(T state)   // CTOR
+        {
+            this.state = state;
+        }
+        public bool Equals(State<T> s) // we overload Object's Equals method
+        {
+            return state.Equals(s.state);
+        }
+        public T getState()
+        {
+            return this.state;
+        }
+
+
     }
-    public bool Equals(State<T> s) // we overload Object's Equals method
-    {
-        return state.Equals(s.state);
-    } 
-    public T getState()
-    {
-        return this.state;
-    }
-    public void setCameFrom(State<T> s)
-    {
-        cameFrom = s;
-    }
-    
-}
-    public interface ISearchable <T>
+    public interface ISearchable<T>
     {
         State<T> getInitialState();
         State<T> getGoalState();
@@ -45,9 +44,10 @@ namespace SearchAlgorithmsLib
     public interface ISearcher<T>
     {
         // the search method
-        Solution<T> search (ISearchable<T> searchable);
-    // get how many nodes were evaluated by the algorithm
-    int getNumberOfNodesEvaluated();
+        Solution<T> search(ISearchable<T> searchable);
+        // get how many nodes were evaluated by the algorithm
+        int getNumberOfNodesEvaluated();
+        Solution<T> backTrace(State<T> goal);
     }
     public abstract class Searcher<T> : ISearcher<T>
     {
@@ -78,13 +78,37 @@ namespace SearchAlgorithmsLib
         {
             openList.Enqueue(state, i);
         }
-        public bool contains(State<T> s) 
+        public bool contains(State<T> s)
         {
             if (openList.Contains(s))
             {
                 return true;
             }
             return false;
+        }
+        public Solution<T> backTrace(State<T> goal)
+        {
+            Solution<T> endSolution = new Solution<T>();
+
+            List<State<T>> backtrace = new List<State<T>>();
+            Stack<State<T>> backStack = new Stack<State<T>>();
+            State<T> camefrom = goal.CameFrom;
+            while (camefrom != null)
+            {
+                backStack.Push(camefrom);
+                camefrom = camefrom.CameFrom;
+
+            }
+            while (backStack.Count != 0)
+            {
+                backtrace.Add(backStack.Pop());
+            }
+            endSolution.sol = backtrace;
+            return endSolution;
+        }
+        public void updateNodesEvaluated()
+        {
+            evaluatedNodes++;
         }
     }
 
@@ -121,31 +145,31 @@ namespace SearchAlgorithmsLib
             List<State<MazeLib.Position>> listush = new List<State<MazeLib.Position>>();
             if (myMaze[y + 1, x].Equals("Free"))
             {
-                MazeLib.Position p = new MazeLib.Position (y+1,x);
-            
+                MazeLib.Position p = new MazeLib.Position(y + 1, x);
+
                 State<MazeLib.Position> down = new State<MazeLib.Position>(p);
-                down.setCameFrom(s);
+                down.CameFrom = s;
                 listush.Add(down);
             }
             if (myMaze[y - 1, x].Equals("Free"))
             {
                 MazeLib.Position p = new MazeLib.Position(y - 1, x);
                 State<MazeLib.Position> up = new State<MazeLib.Position>(p);
-                up.setCameFrom(s);
+                up.CameFrom = s;
                 listush.Add(up);
             }
-            if (myMaze[y, x+1].Equals("Free"))
+            if (myMaze[y, x + 1].Equals("Free"))
             {
-                MazeLib.Position p = new MazeLib.Position(y, x+1);
+                MazeLib.Position p = new MazeLib.Position(y, x + 1);
                 State<MazeLib.Position> right = new State<MazeLib.Position>(p);
-                right.setCameFrom(s);
+                right.CameFrom = s;
                 listush.Add(right);
             }
             if (myMaze[y, x - 1].Equals("Free"))
             {
                 MazeLib.Position p = new MazeLib.Position(y, x - 1);
                 State<MazeLib.Position> left = new State<MazeLib.Position>(p);
-                left.setCameFrom(s);
+                left.CameFrom = s;
                 listush.Add(left);
             }
             return listush;
@@ -155,9 +179,10 @@ namespace SearchAlgorithmsLib
             myMaze = maze;
         }
     }
-    public class BFS<T>: Searcher<T>
+    public class BFS<T> : Searcher<T>
     {
-        public override Solution<T> search(ISearchable<T> searchable){ // Searcher's abstract method overriding
+        public override Solution<T> search(ISearchable<T> searchable)
+        { // Searcher's abstract method overriding
             int i = 0;
             addToOpenList(searchable.getInitialState(), i); // inherited from Searcher
             HashSet<State<T>> closed = new HashSet<State<T>>();
@@ -166,8 +191,8 @@ namespace SearchAlgorithmsLib
                 State<T> n = popOpenList(); // inherited from Searcher, removes the best state
                 closed.Add(n);
                 if (n.Equals(searchable.getGoalState()))
-                    return backTrace(); // private method, back traces through the parents
-                                        // calling the delegated method, returns a list of states with n as a parent
+                    return backTrace(n); // private method, back traces through the parents
+                                         // calling the delegated method, returns a list of states with n as a parent
                 List<State<T>> succerssors = searchable.getAllPossibleStates(n);
                 foreach (State<T> s in succerssors)
                 {
@@ -182,6 +207,35 @@ namespace SearchAlgorithmsLib
                     }
                 }
             }
+            return null;
         }
+    }
+    public class DFS<T> : Searcher<T>
+    {
+        public override Solution<T> search(ISearchable<T> searchable)
+        {
+            State<T> current; // = new State<T>();
+            Stack<State<T>> beingChecked = new Stack<State<T>>();
+            List<State<T>> discovered = new List<State<T>>();
+            beingChecked.Push(searchable.getGoalState());
+
+            while(beingChecked.Count != 0)
+            {
+                current = beingChecked.Pop();
+                updateNodesEvaluated();
+
+                if (!discovered.Contains(current))
+                {
+                    discovered.Add(current);
+                    List<State<T>> adjacents = searchable.getAllPossibleStates(current);
+                    foreach(State<T> adj in adjacents)
+                    {
+                        beingChecked.Push(adj);
+                    }
+
+                }
+            }
+        }
+        
     }
 }
