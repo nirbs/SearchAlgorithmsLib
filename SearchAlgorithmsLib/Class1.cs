@@ -18,6 +18,7 @@ namespace SearchAlgorithmsLib
         private T state;    // the state represented by a T
         private double cost;    // cost to reach this state (set by a setter)
         private State<T> cameFrom;    // the state we came from to this state (setter)
+        public double Cost { get; set; }
         public State<T> CameFrom { get; set; }
         public State(T state)   // CTOR
         {
@@ -31,8 +32,7 @@ namespace SearchAlgorithmsLib
         {
             return this.state;
         }
-
-
+       
     }
     public interface ISearchable<T>
     {
@@ -74,9 +74,9 @@ namespace SearchAlgorithmsLib
             return evaluatedNodes;
         }
         public abstract Solution<T> search(ISearchable<T> searchable);
-        public void addToOpenList(State<T> state, int i)
+        public void addToOpenList(State<T> state)
         {
-            openList.Enqueue(state, i);
+            openList.Enqueue(state, (float)state.Cost);
         }
         public bool contains(State<T> s)
         {
@@ -183,8 +183,8 @@ namespace SearchAlgorithmsLib
     {
         public override Solution<T> search(ISearchable<T> searchable)
         { // Searcher's abstract method overriding
-            int i = 0;
-            addToOpenList(searchable.getInitialState(), i); // inherited from Searcher
+            addToOpenList(searchable.getInitialState()); // inherited from Searcher
+            searchable.getInitialState().Cost=0;
             HashSet<State<T>> closed = new HashSet<State<T>>();
             while (OpenListSize > 0)
             {
@@ -196,14 +196,23 @@ namespace SearchAlgorithmsLib
                 List<State<T>> succerssors = searchable.getAllPossibleStates(n);
                 foreach (State<T> s in succerssors)
                 {
+                    double newCost = s.CameFrom.Cost + 1;
                     if (!closed.Contains(s) && !contains(s))
                     {
-                        // s.setCameFrom(n); // already done by getSuccessors
-                        i++;
-                        addToOpenList(s, i);
+                        s.Cost = newCost;
+                        addToOpenList(s);
+                    }
+                    else if(closed.Contains(s))
+                    {
+                        if (newCost < s.Cost)
+                        {
+                            s.Cost = newCost;
+                            addToOpenList(s);
+                        }
                     }
                     else
                     {
+                        if(newCost)
                     }
                 }
             }
@@ -214,7 +223,7 @@ namespace SearchAlgorithmsLib
     {
         public override Solution<T> search(ISearchable<T> searchable)
         {
-            State<T> current; // = new State<T>();
+            State<T> current; 
             Stack<State<T>> beingChecked = new Stack<State<T>>();
             List<State<T>> discovered = new List<State<T>>();
             beingChecked.Push(searchable.getGoalState());
