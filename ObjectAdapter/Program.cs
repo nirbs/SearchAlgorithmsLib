@@ -20,12 +20,14 @@ namespace ObjectAdapter
             //create DFSmaze generator
 
             MazeGeneratorLib.DFSMazeGenerator mazeGenerator = new MazeGeneratorLib.DFSMazeGenerator();
-            MazeLib.Maze mazush =  mazeGenerator.Generate(30, 30);
+            MazeLib.Maze mazush =  mazeGenerator.Generate(30,30);
             string s = mazush.ToString();
 
             //prints maze
-            Console.Write(s);
-            
+            Console.WriteLine(s);
+            Console.WriteLine($"START: {mazush.InitialPos}");
+            Console.WriteLine($"END: {mazush.GoalPos}");
+
             //solves in BFS
             SearchAlgorithmsLib.State<MazeLib.Position> entrance = new SearchAlgorithmsLib.State<MazeLib.Position>(mazush.InitialPos);
             SearchAlgorithmsLib.State<MazeLib.Position> exit = new SearchAlgorithmsLib.State<MazeLib.Position>(mazush.GoalPos);
@@ -35,12 +37,14 @@ namespace ObjectAdapter
             SearchAlgorithmsLib.Solution<MazeLib.Position> bfsSolution =  bfs.search(mazeSearchable);
 
             //Solves in DFS
-            SearchAlgorithmsLib.DFS<MazeLib.Position> dfs = new SearchAlgorithmsLib.DFS<MazeLib.Position>();
-            SearchAlgorithmsLib.Solution<MazeLib.Position> dfsSolution = dfs.search(mazeSearchable);
-
+            
 
             //prints how many checks algo did
             Console.WriteLine($"BFS DID {bfs.getNumberOfNodesEvaluated()} evaluations");
+
+            SearchAlgorithmsLib.DFS<MazeLib.Position> dfs = new SearchAlgorithmsLib.DFS<MazeLib.Position>();
+            SearchAlgorithmsLib.Solution<MazeLib.Position> dfsSolution = dfs.search(mazeSearchable);
+
             Console.WriteLine($"DFS DID {dfs.getNumberOfNodesEvaluated()} evaluations");
 
         }
