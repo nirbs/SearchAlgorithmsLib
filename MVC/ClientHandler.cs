@@ -10,6 +10,8 @@ namespace MVC
 {
     class ClientHandler : IClientHandler
     {
+        private IController controller = new Controller();
+
         public void HandleClient(TcpClient client)
         {
             new Task(() =>
@@ -20,9 +22,10 @@ namespace MVC
                 {
                     string commandLine = reader.ReadLine();
                     Console.WriteLine("Got command: {0}", commandLine);
-                    string result = ExecuteCommand(commandLine, client);
+                    string result = controller.ExecuteCommand(commandLine, client);
                     writer.Write(result);
                 }
+             
                 client.Close();
             }).Start();
         }

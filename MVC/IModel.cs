@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MVC
 {
-    interface IModel
+    public interface IModel
     {
+         
     }
 }

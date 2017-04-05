@@ -13,9 +13,15 @@ namespace MVC
         private IModel model;
         public Controller()
         {
-            model = new Model();
+            model = new MazeModel();
             commands = new Dictionary<string, ICommand>();
             commands.Add("generate", new GenerateMazeCommand(model));
+            commands.Add("solve", new SolveMazeCommand(model));
+            commands.Add("start", new StartGameCommand(model));
+            commands.Add("list", new ListAllGamesCommand(model));
+            commands.Add("join", new JoinGameCommand(model));
+            commands.Add("play", new PlayOneMoveCommand(model));
+            commands.Add("close", new closeCommand(model));
             // more commands...
         }
         public string ExecuteCommand(string commandLine, TcpClient client)
