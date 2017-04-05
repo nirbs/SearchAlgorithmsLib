@@ -16,9 +16,9 @@ namespace SearchAlgorithmsLib
     public class State<T>
     {
         private T state;    // the state represented by a T
-        private double cost;    // cost to reach this state (set by a setter)
+        public double cost { get; set; }    // cost to reach this state (set by a setter)
         private State<T> cameFrom;    // the state we came from to this state (setter)
-        public double Cost { get; set; }
+        //public double Cost { get; set; }
         public State<T> CameFrom { get; set; }
         public State(T state)   // CTOR
         {
@@ -90,7 +90,7 @@ namespace SearchAlgorithmsLib
 
         public void addToOpenList(State<T> state)
         {
-            openList.Enqueue(state, (float)state.Cost);
+            openList.Enqueue(state, (float)state.cost);
         }
 
         public bool contains(State<T> s)
@@ -194,7 +194,7 @@ namespace SearchAlgorithmsLib
                 {
                     MazeLib.Position p = new MazeLib.Position(x, y + 1);
                     State<MazeLib.Position> down = new State<MazeLib.Position>(p);
-                    down.Cost = 1000;
+                   // down.cost = 99999999999;
                     adjencyList.Add(down);
                 }
             }
@@ -204,7 +204,7 @@ namespace SearchAlgorithmsLib
                 {
                     MazeLib.Position p = new MazeLib.Position(x, y - 1);
                     State<MazeLib.Position> up = new State<MazeLib.Position>(p);
-                    up.Cost = 1000;
+                   // up.cost = 99999999999;
 
                     adjencyList.Add(up);
                 }
@@ -215,7 +215,7 @@ namespace SearchAlgorithmsLib
                 {
                     MazeLib.Position p = new MazeLib.Position(x + 1,y);
                     State<MazeLib.Position> right = new State<MazeLib.Position>(p);
-                    right.Cost = 1000;
+                    //right.cost = 99999999999;
                     adjencyList.Add(right);
                 }
             }
@@ -225,7 +225,7 @@ namespace SearchAlgorithmsLib
                 {
                     MazeLib.Position p = new MazeLib.Position(x - 1, y);
                     State<MazeLib.Position> left = new State<MazeLib.Position>(p);
-                    left.Cost = 1000;
+                   // left.cost = 99999999999;
                     adjencyList.Add(left);
                 }
             }
@@ -243,7 +243,7 @@ namespace SearchAlgorithmsLib
         public override Solution<T> search(ISearchable<T> searchable)
         { // Searcher's abstract method overriding
             addToOpenList(searchable.getInitialState()); // inherited from Searcher
-            searchable.getInitialState().Cost = 0;
+            searchable.getInitialState().cost = 0;
             List<State<T>> closed = new List<State<T>>();
 
 
@@ -260,32 +260,32 @@ namespace SearchAlgorithmsLib
                 }  List<State<T>> succerssors = searchable.getAllPossibleStates(n);
                 foreach (State<T> s in succerssors)
                 {
-                    double newCost = n.Cost + 1;
+                    double newCost = n.cost + 1;
                     //First time it is discovered
                     if (!found(s, closed) && !contains(s))
                     {
                         s.CameFrom = n;
-                        s.Cost = newCost;
+                        s.cost = newCost;
                         addToOpenList(s);
                     }
                     //If we may want to update its Cost
                     else
                     {
                         //If we want to update cost
-                        if (s.Cost > newCost)
+                        if (s.cost > newCost)
                         {
                             //If it has not yet been added to discovered list
                             if (!contains(s))
                             {
                                 s.CameFrom = n;
-                                s.Cost = newCost;
+                                s.cost = newCost;
                                 addToOpenList(s);
                             }
                             //In open list, but now has a better path
                             else
                             {
                                 remove(s);
-                                s.Cost = newCost;
+                                s.cost = newCost;
                                 s.CameFrom = n;
                                 addToOpenList(s);
                             }
