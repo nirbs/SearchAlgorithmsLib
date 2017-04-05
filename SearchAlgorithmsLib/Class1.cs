@@ -142,10 +142,10 @@ namespace SearchAlgorithmsLib
             backtrace.Add(goal);
             endSolution.sol = backtrace;
             Console.WriteLine($"PATH SIZE: {backtrace.Count()}");
-            foreach(State<T> t in endSolution.sol)
+            /*foreach(State<T> t in endSolution.sol)
             {
                 Console.WriteLine(t.getState().ToString());
-            }
+            }*/
                
             return endSolution;
         }
@@ -153,6 +153,11 @@ namespace SearchAlgorithmsLib
         public void updateNodesEvaluated()
         {
             evaluatedNodes++;
+        }
+
+        public void initializeEvaluatedNodes()
+        {
+            evaluatedNodes = 0;
         }
     }
 
@@ -275,20 +280,21 @@ namespace SearchAlgorithmsLib
                         if (s.cost > newCost)
                         {
                             //If it has not yet been added to discovered list
-                            if (!contains(s))
+                            if (contains(s))
                             {
+                                remove(s);
                                 s.CameFrom = n;
                                 s.cost = newCost;
                                 addToOpenList(s);
                             }
                             //In open list, but now has a better path
-                            else
+                           /* else
                             {
                                 remove(s);
                                 s.cost = newCost;
                                 s.CameFrom = n;
-                                addToOpenList(s);
-                            }
+                                
+                            }*/
                         }
                     }
                 }
@@ -393,10 +399,15 @@ namespace SearchAlgorithmsLib
                 Stack<State<T>> beingChecked = new Stack<State<T>>();
                 List<State<T>> discovered = new List<State<T>>();
                 beingChecked.Push(searchable.getInitialState());
-
+            bool check = true;
                 while (beingChecked.Count != 0)
                 {
                     current = beingChecked.Pop();
+                    if (check)
+                {
+                    initializeEvaluatedNodes();
+                    check = false;
+                }
                     updateNodesEvaluated();
                     if (current.getState().Equals(searchable.getGoalState().getState()))
                     {
