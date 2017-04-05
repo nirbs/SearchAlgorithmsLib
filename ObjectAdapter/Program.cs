@@ -20,7 +20,7 @@ namespace ObjectAdapter
             //create DFSmaze generator
 
             MazeGeneratorLib.DFSMazeGenerator mazeGenerator = new MazeGeneratorLib.DFSMazeGenerator();
-            MazeLib.Maze mazush =  mazeGenerator.Generate(200,200);
+            MazeLib.Maze mazush =  mazeGenerator.Generate(30,30);
             string s = mazush.ToString();
 
             //prints maze
