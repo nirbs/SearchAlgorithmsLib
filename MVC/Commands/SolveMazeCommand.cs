@@ -5,7 +5,7 @@ namespace MVC
 {
     public class SolveMazeCommand : ICommand
     {
-        private IModel model;
+        private MazeModel model;
 
         public SolveMazeCommand(IModel model)
         {
@@ -14,7 +14,10 @@ namespace MVC
 
         public string Execute(string[] args, TcpClient client = null)
         {
-            throw new NotImplementedException();
+
+            string solution = model.solveMaze(args);
+            //send to client
+            //close client
         }
     }
 }

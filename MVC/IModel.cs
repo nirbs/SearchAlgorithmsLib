@@ -8,6 +8,6 @@ namespace MVC
 {
     public interface IModel
     {
-         
+         ///void Solve(string howToUpdate);
     }
 }

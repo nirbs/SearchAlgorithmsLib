@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MVC.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -17,12 +18,13 @@ namespace MVC
             commands = new Dictionary<string, ICommand>();
             commands.Add("generate", new GenerateMazeCommand(model));
             commands.Add("solve", new SolveMazeCommand(model));
-            commands.Add("start", new StartGameCommand(model));
+            commands.Add("start", new GameCommand(model));
             commands.Add("list", new ListAllGamesCommand(model));
             commands.Add("join", new JoinGameCommand(model));
-            commands.Add("play", new PlayOneMoveCommand(model));
+            commands.Add("play", new JoinGameCommand(model));
             commands.Add("close", new closeCommand(model));
             // more commands...
+            
         }
         public string ExecuteCommand(string commandLine, TcpClient client)
         {

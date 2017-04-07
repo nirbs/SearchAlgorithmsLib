@@ -7,6 +7,7 @@ namespace MVC
     {
         private IModel model;
 
+
         public StartGameCommand(IModel model)
         {
             this.model = model;
@@ -14,7 +15,7 @@ namespace MVC
 
         public string Execute(string[] args, TcpClient client = null)
         {
-            throw new NotImplementedException();
+            //TODO Create clientInfo ? and add to model?
         }
     }
 }
