@@ -26,7 +26,7 @@ namespace ClientSide
             while(true)
             {
 
-                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
                 myTcp = new TcpClient();
                 myTcp.Connect(ep);
 
