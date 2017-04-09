@@ -1,4 +1,4 @@
-﻿using MVC;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,7 @@ namespace ServerSide {
         {
             Server server = new Server(8000, new ClientHandler());
             server.Start();
+            Console.Read();
         }
             
     }

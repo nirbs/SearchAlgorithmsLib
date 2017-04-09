@@ -22,6 +22,7 @@ namespace ServerSide
                 {
                     string commandLine = reader.ReadLine();
                     Console.WriteLine("Got command: {0}", commandLine);
+                    Console.Read();
                     string result = controller.ExecuteCommand(commandLine, client);
                 }
             }).Start();

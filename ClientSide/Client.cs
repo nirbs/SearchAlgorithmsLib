@@ -18,7 +18,6 @@ namespace ClientSide
         public Client()
         {
 
-
         }
 
         public void BeginGame()
@@ -26,7 +25,7 @@ namespace ClientSide
             while(true)
             {
 
-                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
                 myTcp = new TcpClient();
                 myTcp.Connect(ep);
 
@@ -34,17 +33,18 @@ namespace ClientSide
                 myReader = new StreamReader(stream);
                 myWriter = new StreamWriter(stream);
 
-
                 //Accept input
-                // string input = Console.ReadLine();
+                 string input = Console.ReadLine();
 
                 //send input to Server
-                myWriter.Write("HELLO FROM CLIENT");
+                myWriter.WriteLine("HELLO FROM CLIENT");
 
                 //Receive input from server
                 string response =  myReader.ReadLine();
                 Console.WriteLine("RESPONSE FROM SERVER: {0}",response);
                 //Send again, or connection closes
+
+                Console.Read();
             }
         }
 

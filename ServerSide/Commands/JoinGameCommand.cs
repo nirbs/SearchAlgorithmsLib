@@ -2,7 +2,7 @@
 using System;
 using System.Net.Sockets;
 
-namespace MVC
+namespace ServerSide
 {
     public class JoinGameCommand : ICommand
     {

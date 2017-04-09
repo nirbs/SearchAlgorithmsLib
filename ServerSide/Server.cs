@@ -22,13 +22,14 @@ namespace ServerSide
         }
         public void Start()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
             listener = new TcpListener(ep);
 
             listener.Start();
             Console.WriteLine("Waiting for connections...");
 
-            Task task = new Task(() => {
+            Task task = new Task(() =>
+            {
                 while (true)
                 {
                     try
@@ -45,6 +46,7 @@ namespace ServerSide
                 Console.WriteLine("Server stopped");
             });
             task.Start();
+
         }
         public void Stop()
         {

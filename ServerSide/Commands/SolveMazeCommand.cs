@@ -4,7 +4,7 @@ using ServerSide;
 using System;
 using System.Net.Sockets;
 
-namespace MVC
+namespace ServerSide
 {
     public class SolveMazeCommand : ICommand
     {

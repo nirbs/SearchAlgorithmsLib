@@ -3,7 +3,7 @@ using ServerSide;
 using System;
 using System.Net.Sockets;
 
-namespace MVC
+namespace ServerSide
 {
     internal class GenerateMazeCommand : ICommand
     {
@@ -16,7 +16,7 @@ namespace MVC
 
         public string Execute(string[] args, TcpClient client = null)
         {
-           Maze m =  model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client);
+            Maze m =  model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client);
 
             return m.ToJSON();
         }
