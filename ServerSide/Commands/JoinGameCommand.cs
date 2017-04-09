@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerSide;
+using System;
 using System.Net.Sockets;
 
 namespace MVC
@@ -18,7 +19,7 @@ namespace MVC
             
             //Returns the game that this player joined
             MazeGame game = model.AddPlayer(args[0], client);
-
+            
             //Send the maze info to player 1 and 2 using 'game' above    
             return "YES";
         }

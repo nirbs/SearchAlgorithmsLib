@@ -1,5 +1,6 @@
 ﻿using MazeLib;
 using SearchAlgorithmsLib;
+using ServerSide;
 using System;
 using System.Net.Sockets;
 

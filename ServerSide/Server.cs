@@ -1,5 +1,4 @@
-﻿using MVC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerSide
+namespace MVC
 {
     public class Server
     {
@@ -23,11 +22,11 @@ namespace ServerSide
         public void Start()
         {
             IPEndPoint ep = new
-            IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
+            IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
             listener = new TcpListener(ep);
 
             listener.Start();
-            //Console.WriteLine("Waiting for connections...");
+            Console.WriteLine("Waiting for connections...");
 
             Task task = new Task(() => {
                 while (true)
@@ -35,7 +34,7 @@ namespace ServerSide
                     try
                     {
                         TcpClient client = listener.AcceptTcpClient();
-                        //Console.WriteLine("Got new connection");
+                        Console.WriteLine("Got new connection");
                         ch.HandleClient(client);
                     }
                     catch (SocketException)

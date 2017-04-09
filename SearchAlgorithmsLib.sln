@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectAdapter", "ObjectAdap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC", "MVC\MVC.csproj", "{FFDD7065-AFB3-4938-8461-14D7ED263428}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSide", "ClientSide\ClientSide.csproj", "{1BCA8B8E-E619-4A66-8819-436532A0C3D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSide", "ServerSide\ServerSide.csproj", "{EABE1A2F-1307-4173-B9A7-1413FF0E7F3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{FFDD7065-AFB3-4938-8461-14D7ED263428}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFDD7065-AFB3-4938-8461-14D7ED263428}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFDD7065-AFB3-4938-8461-14D7ED263428}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BCA8B8E-E619-4A66-8819-436532A0C3D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BCA8B8E-E619-4A66-8819-436532A0C3D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BCA8B8E-E619-4A66-8819-436532A0C3D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BCA8B8E-E619-4A66-8819-436532A0C3D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EABE1A2F-1307-4173-B9A7-1413FF0E7F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EABE1A2F-1307-4173-B9A7-1413FF0E7F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EABE1A2F-1307-4173-B9A7-1413FF0E7F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EABE1A2F-1307-4173-B9A7-1413FF0E7F3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

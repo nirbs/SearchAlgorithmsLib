@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using SearchAlgorithmsLib;
 using MazeLib;
 using System.Net.Sockets;
+using MVC;
 
-namespace MVC { 
+namespace ServerSide { 
 
 
     public class MazeModel : IModel
@@ -25,6 +26,7 @@ namespace MVC {
             solvedMazes = new Dictionary<string, Solution<Position>>();
 
             searchers = new Dictionary<int, ISearcher<Position>>();
+
             //Adds searchers to dictionary
             searchers.Add(0, new BFS<Position>());
             searchers.Add(1, new DFS<Position>());

@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace MVC
 {
-    class ClientInfo
+    interface IController
     {
-        public bool HasPartner { get; set; }
-        public TcpClient client { get; set; }
-        public TcpClient partner { get; set; }
+        string ExecuteCommand(string commandLine, TcpClient client);
     }
 }
