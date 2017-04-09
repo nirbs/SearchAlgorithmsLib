@@ -6,7 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MVC
+namespace ServerSide
+
 {
     public class Server
     {
@@ -21,8 +22,7 @@ namespace MVC
         }
         public void Start()
         {
-            IPEndPoint ep = new
-            IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
             listener = new TcpListener(ep);
 
             listener.Start();
