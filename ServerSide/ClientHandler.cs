@@ -19,7 +19,7 @@ namespace ServerSide
                 NetworkStream stream = client.GetStream();
                 StreamReader reader = new StreamReader(stream);
                 StreamWriter writer = new StreamWriter(stream);
-                {
+                while (true) {
                     string commandLine = reader.ReadLine();
                     Console.WriteLine("Got command: {0}", commandLine);
 
