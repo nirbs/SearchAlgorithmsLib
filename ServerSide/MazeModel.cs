@@ -37,6 +37,7 @@ namespace ServerSide
         {
             //Creates the maze
             Maze newMaze = new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
+            newMaze.Name = name;
 
             //Adds the current client as player1 to this game
             MazeGame newGame = new MazeGame(newMaze, client);
