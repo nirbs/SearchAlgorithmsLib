@@ -22,29 +22,31 @@ namespace ClientSide
 
         public void BeginGame()
         {
-            while(true)
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
+            myTcp = new TcpClient();
+            myTcp.Connect(ep);
+
+            NetworkStream stream = myTcp.GetStream();
+            myReader = new StreamReader(stream);
+            myWriter = new StreamWriter(stream);
+
+            while (true)
             {
 
-                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
-                myTcp = new TcpClient();
-                myTcp.Connect(ep);
-
-                NetworkStream stream = myTcp.GetStream();
-                myReader = new StreamReader(stream);
-                myWriter = new StreamWriter(stream);
-
                 //Accept input
-                 string input = Console.ReadLine();
+                string input = Console.ReadLine();
 
                 //send input to Server
-                myWriter.WriteLine("HELLO FROM CLIENT");
+                myWriter.WriteLine(input);
+                myWriter.Flush();
 
-                //Receive input from server
+                //Receive input from server -- only reads first row, needs to read whole maze/response
                 string response =  myReader.ReadLine();
-                Console.WriteLine("RESPONSE FROM SERVER: {0}",response);
+               
+                Console.WriteLine("RESPONSE FROM SERVER: {0}", response);
+                
                 //Send again, or connection closes
 
-                Console.Read();
             }
         }
 

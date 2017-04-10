@@ -42,6 +42,9 @@ namespace ServerSide {
 
             //Adds game to dictionary
             mazeGames.Add(name, newGame);
+
+            Console.WriteLine("Maze {0} added to dictionary", name);
+            Console.WriteLine("Current dictionary size: {0}", mazeGames.Count);
             return newMaze;
         }
 
@@ -56,6 +59,7 @@ namespace ServerSide {
             //Already solved this maze
             if(solvedMazes.ContainsKey(name))
             {
+                Console.WriteLine("The maze '{0}' has already been solved...Returning solution", name);
                 return solvedMazes[name];
             }
 
@@ -74,6 +78,7 @@ namespace ServerSide {
 
             //solves the maze
             Solution<Position> sol = s.search(searchable);
+            Console.WriteLine("Solution for maze: {0}", sol.sol);
 
             //Adds solution to Dictionary
             solvedMazes.Add(name, sol);
@@ -89,6 +94,7 @@ namespace ServerSide {
 
         public MazeGame AddPlayer(string game, TcpClient player)
         {
+            Console.WriteLine("Player added to {0}", game);
             mazeGames[game].AddPlayer(player);
             return mazeGames[game];
         }
