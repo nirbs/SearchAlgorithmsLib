@@ -42,8 +42,15 @@ namespace ClientSide
 
                 //Receive input from server -- only reads first row, needs to read whole maze/response
                 string response = myReader.ReadLine();
+                do
+                {
+                    response += "\r\n";
+                    response+= myReader.ReadLine();
+                } while (myReader.Peek() > 0);
+               
 
-                Console.WriteLine("RESPONSE FROM SERVER: {0}", response);
+                Console.WriteLine("RESPONSE FROM SERVER:");
+                Console.WriteLine(response);
 
                 //Send again, or connection closes
 
