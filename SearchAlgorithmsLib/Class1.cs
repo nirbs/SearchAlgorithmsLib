@@ -17,8 +17,8 @@ namespace SearchAlgorithmsLib
     {
         private T state;    // the state represented by a T
         public double cost { get; set; }    // cost to reach this state (set by a setter)
-        private State<T> cameFrom;    // the state we came from to this state (setter)
-        //public double Cost { get; set; }
+        //private State<T> cameFrom;    // the state we came from to this state (setter)
+        public double Cost { get; set; }
         public State<T> CameFrom { get; set; }
         public State(T state)   // CTOR
         {
@@ -31,6 +31,26 @@ namespace SearchAlgorithmsLib
         public T getState()
         {
             return this.state;
+        }
+
+        public static class StatePool
+        {
+            private static Dictionary<T, State<T>> pool = new Dictionary<T, State<T>>();
+            public static State<T> getState(T state)
+            {
+                if (pool == null || !pool.ContainsKey(state))
+                {
+                    State<T> newState = new State<T>(state);
+                    pool.Add(state, newState);
+                }
+                
+                return pool[state];
+            }
+            public static bool checkState(State<T> state)
+            {
+                return pool.ContainsValue(state);
+            }
+
         }
 
     }
@@ -146,7 +166,7 @@ namespace SearchAlgorithmsLib
             {
                 Console.WriteLine(t.getState().ToString());
             }*/
-               
+
             return endSolution;
         }
 
@@ -158,6 +178,15 @@ namespace SearchAlgorithmsLib
         public void initializeEvaluatedNodes()
         {
             evaluatedNodes = 0;
+        }
+    }
+
+    public class CostComparable: IComparable<CostComparable>
+    {
+        public int Cost { get; set; }
+        public int CompareTo(CostComparable otherCost)
+        {
+            return  this.Cost.CompareTo(otherCost.Cost);
         }
     }
 
@@ -198,9 +227,12 @@ namespace SearchAlgorithmsLib
                 if (myMaze[x, y + 1] == 0)
                 {
                     MazeLib.Position p = new MazeLib.Position(x, y + 1);
-                    State<MazeLib.Position> down = new State<MazeLib.Position>(p);
-                   // down.cost = 99999999999;
-                    adjencyList.Add(down);
+                    State<MazeLib.Position> right = State<MazeLib.Position>.StatePool.getState(p);
+                    if (s.CameFrom==null || (s.CameFrom != null && !s.CameFrom.Equals(right)))
+                    {
+                        adjencyList.Add(right);
+                    }
+                    
                 }
             }
             if (y - 1 >= 0)
@@ -208,20 +240,25 @@ namespace SearchAlgorithmsLib
                 if (myMaze[x, y - 1] == 0)
                 {
                     MazeLib.Position p = new MazeLib.Position(x, y - 1);
-                    State<MazeLib.Position> up = new State<MazeLib.Position>(p);
-                   // up.cost = 99999999999;
-
-                    adjencyList.Add(up);
+                    State<MazeLib.Position> left = State<MazeLib.Position>.StatePool.getState(p);
+                    // up.cost = 99999999999;
+                    if (s.CameFrom == null || (s.CameFrom != null && !s.CameFrom.Equals(left)))
+                    {
+                        adjencyList.Add(left);
+                    }
                 }
             }
             if (x + 1 < myMaze.Rows)
             {
                 if (myMaze[x + 1, y] == 0)
                 {
-                    MazeLib.Position p = new MazeLib.Position(x + 1,y);
-                    State<MazeLib.Position> right = new State<MazeLib.Position>(p);
+                    MazeLib.Position p = new MazeLib.Position(x + 1, y);
+                    State<MazeLib.Position> down = State<MazeLib.Position>.StatePool.getState(p);
                     //right.cost = 99999999999;
-                    adjencyList.Add(right);
+                    if (s.CameFrom == null || (s.CameFrom!=null && !s.CameFrom.Equals(down)))
+                    {
+                        adjencyList.Add(down);
+                    }
                 }
             }
             if (x - 1 >= 0)
@@ -229,9 +266,12 @@ namespace SearchAlgorithmsLib
                 if (myMaze[x - 1, y] == 0)
                 {
                     MazeLib.Position p = new MazeLib.Position(x - 1, y);
-                    State<MazeLib.Position> left = new State<MazeLib.Position>(p);
-                   // left.cost = 99999999999;
-                    adjencyList.Add(left);
+                    State<MazeLib.Position> up = State<MazeLib.Position>.StatePool.getState(p);
+                    // left.cost = 99999999999;
+                    if (s.CameFrom == null || (s.CameFrom != null && !s.CameFrom.Equals(up)))
+                    {
+                        adjencyList.Add(up);
+                    }
                 }
             }
             return adjencyList;
@@ -244,14 +284,13 @@ namespace SearchAlgorithmsLib
     public class BFS<T> : Searcher<T>
     {
 
-       
+
         public override Solution<T> search(ISearchable<T> searchable)
         { // Searcher's abstract method overriding
             addToOpenList(searchable.getInitialState()); // inherited from Searcher
             searchable.getInitialState().cost = 0;
-            List<State<T>> closed = new List<State<T>>();
-
-
+            //List<State<T>> closed = new List<State<T>>();
+            HashSet<State<T>> closed = new HashSet<State<T>>();
 
             while (OpenListSize > 0)
             {
@@ -262,12 +301,13 @@ namespace SearchAlgorithmsLib
                     Console.WriteLine(n.CameFrom.getState().ToString());
                     return backTrace(n); // private method, back traces through the parents
                                          // calling the delegated method, returns a list of states with n as a parent
-                }  List<State<T>> succerssors = searchable.getAllPossibleStates(n);
+                }
+                List<State<T>> succerssors = searchable.getAllPossibleStates(n);
                 foreach (State<T> s in succerssors)
                 {
                     double newCost = n.cost + 1;
                     //First time it is discovered
-                    if (!found(s, closed) && !contains(s))
+                    if (!closed.Contains(s) && !contains(s))
                     {
                         s.CameFrom = n;
                         s.cost = newCost;
@@ -288,13 +328,13 @@ namespace SearchAlgorithmsLib
                                 addToOpenList(s);
                             }
                             //In open list, but now has a better path
-                           /* else
-                            {
-                                remove(s);
-                                s.cost = newCost;
-                                s.CameFrom = n;
-                                
-                            }*/
+                            /* else
+                             {
+                                 remove(s);
+                                 s.cost = newCost;
+                                 s.CameFrom = n;
+
+                             }*/
                         }
                     }
                 }
@@ -360,77 +400,71 @@ namespace SearchAlgorithmsLib
 
 
 
-              /*  foreach (State<T> s in succerssors)
+    /*  foreach (State<T> s in succerssors)
+      {
+          double newCost = n.Cost + 1;
+          //Not in closed
+          if (!closed.Contains(s))
+          {
+              //Not in closed AND not in open
+              if (!contains(s))
+              {
+                  s.CameFrom = n;
+                  s.Cost = newCost;
+                  addToOpenList(s);
+              }
+              //Not in closed but is in open, want to check if we should update priority
+              else
+              {
+                  //The new path is shorter than its previous path
+                  if (s.Cost > newCost)
+                  {
+                      s.Cost = newCost;
+                  }
+              }
+          }
+
+
+      }
+  }
+  return null;
+}*/
+
+
+    public class DFS<T> : Searcher<T>
+    {
+        public override Solution<T> search(ISearchable<T> searchable)
+        {
+            State<T> current;
+            Stack<State<T>> beingChecked = new Stack<State<T>>();
+            List<State<T>> discovered = new List<State<T>>();
+            beingChecked.Push(searchable.getInitialState());
+            while (beingChecked.Count != 0)
+            {
+                current = beingChecked.Pop();
+                
+                updateNodesEvaluated();
+                if (current.getState().Equals(searchable.getGoalState().getState()))
                 {
-                    double newCost = n.Cost + 1;
-                    //Not in closed
-                    if (!closed.Contains(s))
+                    return backTrace(current);
+                }
+
+
+                if (!discovered.Contains(current))
+                {
+                    discovered.Add(current);
+                    List<State<T>> adjacents = searchable.getAllPossibleStates(current);
+                    foreach (State<T> adj in adjacents)
                     {
-                        //Not in closed AND not in open
-                        if (!contains(s))
-                        {
-                            s.CameFrom = n;
-                            s.Cost = newCost;
-                            addToOpenList(s);
-                        }
-                        //Not in closed but is in open, want to check if we should update priority
-                        else
-                        {
-                            //The new path is shorter than its previous path
-                            if (s.Cost > newCost)
-                            {
-                                s.Cost = newCost;
-                            }
-                        }
+                        adj.CameFrom = current;
+                        beingChecked.Push(adj);
                     }
-                  
 
                 }
+
             }
             return null;
-        }*/
-
-        
-        public class DFS<T> : Searcher<T>
-        {
-            public override Solution<T> search(ISearchable<T> searchable)
-            {
-                State<T> current;
-                Stack<State<T>> beingChecked = new Stack<State<T>>();
-                List<State<T>> discovered = new List<State<T>>();
-                beingChecked.Push(searchable.getInitialState());
-            bool check = true;
-                while (beingChecked.Count != 0)
-                {
-                    current = beingChecked.Pop();
-                    if (check)
-                {
-                    initializeEvaluatedNodes();
-                    check = false;
-                }
-                    updateNodesEvaluated();
-                    if (current.getState().Equals(searchable.getGoalState().getState()))
-                    {
-                        return backTrace(current);
-                    }
-
-
-                    if (!found(current, discovered))
-                    {
-                        discovered.Add(current);
-                        List<State<T>> adjacents = searchable.getAllPossibleStates(current);
-                        foreach (State<T> adj in adjacents)
-                        {
-                            adj.CameFrom = current;
-                            beingChecked.Push(adj);
-                        }
-
-                    }
-
-                }
-                return null;
-            }
-
         }
+
     }
-    
+}

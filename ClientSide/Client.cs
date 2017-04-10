@@ -41,10 +41,10 @@ namespace ClientSide
                 myWriter.Flush();
 
                 //Receive input from server -- only reads first row, needs to read whole maze/response
-                string response =  myReader.ReadLine();
-               
+                string response = myReader.ReadLine();
+
                 Console.WriteLine("RESPONSE FROM SERVER: {0}", response);
-                
+
                 //Send again, or connection closes
 
             }

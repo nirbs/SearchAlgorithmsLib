@@ -20,19 +20,19 @@ namespace ObjectAdapter
             //create DFSmaze generator
 
             MazeGeneratorLib.DFSMazeGenerator mazeGenerator = new MazeGeneratorLib.DFSMazeGenerator();
-            MazeLib.Maze mazush =  mazeGenerator.Generate(200,200);
-            string s = mazush.ToString();
+            MazeLib.Maze maze =  mazeGenerator.Generate(5,5);
+            string s = maze.ToString();
 
             //prints maze
             Console.WriteLine(s);
-            Console.WriteLine($"START: {mazush.InitialPos}");
-            Console.WriteLine($"END: {mazush.GoalPos}");
+            Console.WriteLine($"START: {maze.InitialPos}");
+            Console.WriteLine($"END: {maze.GoalPos}");
 
             //solves in BFS
-            SearchAlgorithmsLib.State<MazeLib.Position> entrance = new SearchAlgorithmsLib.State<MazeLib.Position>(mazush.InitialPos);
-            SearchAlgorithmsLib.State<MazeLib.Position> exit = new SearchAlgorithmsLib.State<MazeLib.Position>(mazush.GoalPos);
+            SearchAlgorithmsLib.State<MazeLib.Position> entrance = new SearchAlgorithmsLib.State<MazeLib.Position>(maze.InitialPos);
+            SearchAlgorithmsLib.State<MazeLib.Position> exit = new SearchAlgorithmsLib.State<MazeLib.Position>(maze.GoalPos);
             SearchAlgorithmsLib.MazeSearchable mazeSearchable = new SearchAlgorithmsLib.MazeSearchable(entrance, exit);
-            mazeSearchable.setMaze(mazush);
+            mazeSearchable.setMaze(maze);
             SearchAlgorithmsLib.BFS<MazeLib.Position> bfs = new SearchAlgorithmsLib.BFS<MazeLib.Position>();
             SearchAlgorithmsLib.Solution<MazeLib.Position> bfsSolution =  bfs.search(mazeSearchable);
 

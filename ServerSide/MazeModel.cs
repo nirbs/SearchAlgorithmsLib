@@ -8,15 +8,16 @@ using MazeLib;
 using System.Net.Sockets;
 
 
-namespace ServerSide { 
+namespace ServerSide
+{
 
 
     public class MazeModel : IModel
-    {       
+    {
         private Dictionary<string, MazeGame> mazeGames;
         private Dictionary<int, ISearcher<Position>> searchers;
         private Dictionary<string, Solution<Position>> solvedMazes;
-        
+
         public MazeModel()
         {
             //Dictionary to contain all mazeGames
@@ -36,7 +37,7 @@ namespace ServerSide {
         {
             //Creates the maze
             Maze newMaze = new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
-            
+
             //Adds the current client as player1 to this game
             MazeGame newGame = new MazeGame(newMaze, client);
 
@@ -57,7 +58,7 @@ namespace ServerSide {
         public Solution<Position> SolveMaze(string name, int searchType)
         {
             //Already solved this maze
-            if(solvedMazes.ContainsKey(name))
+            if (solvedMazes.ContainsKey(name))
             {
                 Console.WriteLine("The maze '{0}' has already been solved...Returning solution", name);
                 return solvedMazes[name];
@@ -118,4 +119,3 @@ namespace ServerSide {
     }
 
 }
-

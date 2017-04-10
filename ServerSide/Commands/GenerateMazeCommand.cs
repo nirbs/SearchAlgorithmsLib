@@ -17,7 +17,7 @@ namespace ServerSide
 
         public string Execute(string[] args, TcpClient client = null)
         {
-            Maze m =  model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client);
+            Maze m = model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client);
             Console.WriteLine(m.ToString());
             NetworkStream n = client.GetStream();
             StreamWriter w = new StreamWriter(n);
