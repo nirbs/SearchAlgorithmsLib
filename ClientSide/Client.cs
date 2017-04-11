@@ -42,11 +42,11 @@ namespace ClientSide
 
                 //Receive input from server -- only reads first row, needs to read whole maze/response
                 string response = myReader.ReadLine();
-                do
+                while (myReader.Peek() > 0) 
                 {
                     response += "\r\n";
                     response+= myReader.ReadLine();
-                } while (myReader.Peek() > 0);
+                } 
                
 
                 Console.WriteLine("RESPONSE FROM SERVER:");

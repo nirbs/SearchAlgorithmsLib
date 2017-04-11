@@ -58,6 +58,7 @@ namespace ServerSide
 
         public Solution<Position> SolveMaze(string name, int searchType)
         {
+
             //Already solved this maze
             if (solvedMazes.ContainsKey(name))
             {
@@ -80,13 +81,19 @@ namespace ServerSide
 
             //solves the maze
             Solution<Position> sol = s.search(searchable);
-            Console.WriteLine("Solution for maze: {0}", sol.sol);
+            /*Console.WriteLine("Solution for maze:");
+            foreach (State<Position> stat in sol.sol)
+            {
+                Console.WriteLine(stat.getState().ToString());
+            }*/
 
             //Adds solution to Dictionary
             solvedMazes.Add(name, sol);
 
             //COnvert to JSON and return to client HERE OR IN COMMAND?
             return sol;
+
+            
         }
 
         public void Move(TcpClient player)

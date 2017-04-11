@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,15 @@ namespace SearchAlgorithmsLib
         private List<State<T>> solution;
         //public List<State<T>> getSolution() { return solution; }
         public List<State<T>> sol { get; set; }
+        private int NodesEvaluated=0;
+        public int getNodes()
+        {
+            return NodesEvaluated;
+        }
+        public void setNodes (int num)
+        {
+            NodesEvaluated = num;
+        }
     }
 
     public class State<T>
@@ -167,6 +177,8 @@ namespace SearchAlgorithmsLib
                 Console.WriteLine(t.getState().ToString());
             }*/
 
+            endSolution.setNodes(evaluatedNodes);
+       
             return endSolution;
         }
 
@@ -296,6 +308,7 @@ namespace SearchAlgorithmsLib
             {
                 State<T> n = popOpenList(); // inherited from Searcher, removes the best state
                 closed.Add(n);
+          
                 if (n.getState().Equals(searchable.getGoalState().getState()))
                 {
                     Console.WriteLine(n.CameFrom.getState().ToString());
