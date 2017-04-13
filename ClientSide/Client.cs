@@ -14,10 +14,13 @@ namespace ClientSide
         TcpClient myTcp;
         StreamReader myReader;
         StreamWriter myWriter;
+        Dictionary<string, bool> commands;
 
         public Client()
         {
-
+            commands = new Dictionary<string, bool>
+            { { "generate", true }, { "solve", true }, { "start", false }, { "list", false },
+                { "join", false }, { "play", false }, { "close", false } };
         }
 
         public void BeginGame()
@@ -30,14 +33,19 @@ namespace ClientSide
             myReader = new StreamReader(stream);
             myWriter = new StreamWriter(stream);
             string input = "";
+            string commandKey;
             while (true)
             {
-
+                do
+                {
                     input = Console.ReadLine();
+                    string[] arr = input.Split(' ');
+                    commandKey = arr[0];
 
-                    //send input to Server
-                    myWriter.WriteLine(input);
-                    myWriter.Flush();
+                } while (!commands.ContainsKey(commandKey));
+                //send input to Server
+                myWriter.WriteLine(input);
+                myWriter.Flush();
                 
 
                 //Receive input from server -- only reads first row, needs to read whole maze/response
@@ -51,9 +59,14 @@ namespace ClientSide
 
                 Console.WriteLine("RESPONSE FROM SERVER:");
                 Console.WriteLine(response);
-                    
-                //Send again, or connection closes
 
+                //Send again, or connection closes
+                if (commands[commandKey])
+                {
+                    myTcp.Close();
+                    return;
+                }
+                
             }
         }
 
