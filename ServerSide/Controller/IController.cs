@@ -10,5 +10,6 @@ namespace ServerSide
     interface IController
     {
         string ExecuteCommand(string commandLine, TcpClient client);
+        void Start();
     }
 }

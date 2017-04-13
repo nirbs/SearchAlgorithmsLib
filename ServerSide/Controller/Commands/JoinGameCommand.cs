@@ -1,5 +1,6 @@
 ﻿using ServerSide;
 using System;
+using System.IO;
 using System.Net.Sockets;
 
 namespace ServerSide
@@ -19,8 +20,15 @@ namespace ServerSide
             
             //Returns the game that this player joined
             MazeGame game = model.AddPlayer(args[0], client);
-            
-            //Send the maze info to player 1 and 2 using 'game' above    
+            NetworkStream stream = game.player1.GetStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine(game.maze.ToString());
+            writer.Flush();
+            stream = game.player2.GetStream();
+            writer = new StreamWriter(stream);
+            writer.WriteLine(game.maze.ToString());
+            writer.Flush();
+
             return "YES";
         }
     }

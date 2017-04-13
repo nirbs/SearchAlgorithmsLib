@@ -29,16 +29,16 @@ namespace ClientSide
             NetworkStream stream = myTcp.GetStream();
             myReader = new StreamReader(stream);
             myWriter = new StreamWriter(stream);
-
+            string input = "";
             while (true)
             {
 
-                //Accept input
-                string input = Console.ReadLine();
+                    input = Console.ReadLine();
 
-                //send input to Server
-                myWriter.WriteLine(input);
-                myWriter.Flush();
+                    //send input to Server
+                    myWriter.WriteLine(input);
+                    myWriter.Flush();
+                
 
                 //Receive input from server -- only reads first row, needs to read whole maze/response
                 string response = myReader.ReadLine();
@@ -51,7 +51,7 @@ namespace ClientSide
 
                 Console.WriteLine("RESPONSE FROM SERVER:");
                 Console.WriteLine(response);
-
+                    
                 //Send again, or connection closes
 
             }

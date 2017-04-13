@@ -1,6 +1,7 @@
 ﻿using ServerSide;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -18,7 +19,11 @@ namespace ServerSide
         }
         public string Execute(string[] args, TcpClient client = null)
         {
-            model.GetOpponent(client);
+            TcpClient opp = model.GetOpponent(client);
+            NetworkStream s = opp.GetStream();
+            StreamWriter w = new StreamWriter(s);
+            w.WriteLine(args[0]);
+            w.Flush();
             return "YES";
         }
     }

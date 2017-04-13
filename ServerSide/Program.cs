@@ -13,8 +13,12 @@ namespace ServerSide {
 
         public static void Main(string[] args)
         {
-            Server server = new Server(8000, new ClientHandler());
-            server.Start();
+            IView ch = new ClientHandler();
+            IModel m = new MazeModel();
+            IController c = new MazeController(5555,ch, m);
+           
+            //Server server = new Server(8000, new ClientHandler());
+            c.Start();
             Console.Read();
         }
             

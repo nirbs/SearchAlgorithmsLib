@@ -120,8 +120,27 @@ namespace ServerSide
 
         public TcpClient GetOpponent(TcpClient player)
         {
-            return new TcpClient();
-            //Find correct game and send back other player
+            foreach(MazeGame v in mazeGames.Values)
+            {
+                if (v.player1.Equals(player))
+                    return v.player2;
+                if (v.player2.Equals(player))
+                    return v.player1;
+            }
+            return null;
+        }
+
+        public MazeGame GetGameOfClient(TcpClient client)
+        {
+            foreach(MazeGame game in mazeGames.Values)
+            {
+                if(game.player1 == client || game.player2 == client)
+                {
+                    return game;
+                }
+            }
+            return null;
+            
         }
 
     }

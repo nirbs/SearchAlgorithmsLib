@@ -8,15 +8,17 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
-    public class ClientHandler : IClientHandler
+    public class ClientHandler : IView
     {
-        private IController controller = new Controller();
+        private IController controller;
+
 
         public void HandleClient(TcpClient client)
         {
             new Task(() =>
             {
                 NetworkStream stream = client.GetStream();
+    
                 StreamReader reader = new StreamReader(stream);
                 StreamWriter writer = new StreamWriter(stream);
                 while (true) {
@@ -24,6 +26,7 @@ namespace ServerSide
                     Console.WriteLine("Got command: {0}", commandLine);
 
                     string result = controller.ExecuteCommand(commandLine, client);
+
                 }
             }).Start();
         }
