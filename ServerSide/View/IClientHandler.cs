@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
-    public interface IView
+    public interface IClientHandler
     {
         void HandleClient(TcpClient client);
     }

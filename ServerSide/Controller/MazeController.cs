@@ -14,16 +14,16 @@ namespace ServerSide
     class MazeController : IController
     {
         private Dictionary<string, ICommand> commands;
-        private IModel model;
+        public IModel model { get; set; }
         private int port;
         private TcpListener listener;
-        private IView ch;
-
-        public MazeController(int port, IView v, IModel m)
+        public IClientHandler ch { get; set; }
+        
+        public MazeController(int port)
         {
-            ch = v;
+            //ch = v;
             port = port;
-            model = m;
+            model = new MazeModel();
             commands = new Dictionary<string, ICommand>();
             commands.Add("generate", new GenerateMazeCommand(model));
             commands.Add("solve", new SolveMazeCommand(model));
@@ -79,4 +79,4 @@ namespace ServerSide
         }
     }
     }
-}
+

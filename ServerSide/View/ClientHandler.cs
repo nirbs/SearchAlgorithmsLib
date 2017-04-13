@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
-    public class ClientHandler : IView
+    public class ClientHandler: IClientHandler
     {
         private IController controller;
 
-
+        public ClientHandler()
+        {
+            controller = new MazeController(5555);
+        }
         public void HandleClient(TcpClient client)
         {
             new Task(() =>

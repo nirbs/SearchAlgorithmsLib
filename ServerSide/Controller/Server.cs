@@ -15,7 +15,7 @@ namespace ServerSide
         private TcpListener listener;
         private IClientHandler ch;
 
-        public Server(int port, IClientHandler ch)
+        public Server(int port, ClientHandler ch)
         {
             this.port = port;
             this.ch = ch;

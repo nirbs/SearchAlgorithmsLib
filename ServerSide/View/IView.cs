@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServerSide.View
 {
-    interface IView
+    public interface IView
     {
     }
 }

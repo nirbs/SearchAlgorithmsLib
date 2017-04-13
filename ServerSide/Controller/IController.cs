@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
-    interface IController
+   public interface IController
     {
         string ExecuteCommand(string commandLine, TcpClient client);
         void Start();
