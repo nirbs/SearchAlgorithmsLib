@@ -73,10 +73,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\Server.cs" />
     <Compile Include="View\IView.cs" />
+    <Compile Include="View\Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClientSide\ClientSide.csproj">
+      <Project>{1BCA8B8E-E619-4A66-8819-436532A0C3D8}</Project>
+      <Name>ClientSide</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

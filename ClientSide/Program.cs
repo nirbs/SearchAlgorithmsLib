@@ -10,8 +10,9 @@ namespace ClientSide
     {
         static void Main(string[] args)
         {
-            Client c = new Client();
-            c.BeginGame();
+            Client player = new Client ();
+            player.BeginGame();
+
         }
     }
 }

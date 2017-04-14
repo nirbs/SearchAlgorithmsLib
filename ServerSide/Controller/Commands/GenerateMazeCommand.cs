@@ -1,5 +1,7 @@
-﻿using MazeLib;
+﻿using ClientSide;
+using MazeLib;
 using ServerSide;
+using ServerSide.View;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -17,12 +19,13 @@ namespace ServerSide
 
         public string Execute(string[] args, TcpClient client = null)
         {
+           // Player p = new Player(client);
             Maze m = model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client);
             Console.WriteLine(m.ToJSON());
             NetworkStream n = client.GetStream();
-            StreamWriter w = new StreamWriter(n);
-            w.WriteLine(m.ToJSON());
-            w.Flush();
+            StreamWriter s = new StreamWriter(n);
+            s.WriteLine(m.ToJSON());
+            s.Flush();
             return m.ToString();
         }
     }

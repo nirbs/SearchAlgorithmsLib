@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace ClientSide
 {
-    public class Client
+    public class Player
     {
         public StreamWriter MyWriter { get; set; }
         public StreamReader MyReader { get; set; }
@@ -17,18 +15,26 @@ namespace ClientSide
         Dictionary<string, bool> commands;
         string CommandKey;
 
+        *  public void OnOpponentMoved(object sender, PlayEventArgs playerMove)
+          {
+              Console.WriteLine(playerMove.Move);
+          }
+          
 
-        public Client()
+        public Player()
         {
-
+            TcpClient client = new TcpClient();
+            NetworkStream n = client.GetStream();
+            MyReader = new StreamReader(n);
+            MyWriter = new StreamWriter(n);
+            MyTcp = client;
 
             commands = new Dictionary<string, bool>
             { { "generate", true }, { "solve", true }, { "start", false }, { "list", false },
                 { "join", false }, { "play", false }, { "close", false } };
         }
 
-
-        public int ReceiveUpdates()
+        public void ReceiveUpdates()
         {
             while (true)
             {
@@ -42,14 +48,12 @@ namespace ClientSide
 
                 Console.WriteLine("RESPONSE FROM SERVER:");
                 Console.WriteLine(response);
-            
 
                 //Send again, or connection closes
                 if (commands[CommandKey])
                 {
                     MyTcp.Close();
-                    
-                    return 1;
+                    return;
                 }
             }
         }
@@ -57,9 +61,7 @@ namespace ClientSide
         public void SendUpdates()
         {
             string input = "";
-            
             // string commandKey = "";
-           
             while (true)
             {
                 do
@@ -76,7 +78,7 @@ namespace ClientSide
         }
         public void BeginGame()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
             MyTcp = new TcpClient();
             MyTcp.Connect(ep);
 
@@ -84,26 +86,15 @@ namespace ClientSide
             MyReader = new StreamReader(stream);
             MyWriter = new StreamWriter(stream);
 
-            int val = 0;
-
-            Task t1 = new Task(() =>
+            new Task(() =>
             {
                 SendUpdates();
-            });
-            t1.Start();
+            }).Start();
 
-            Task<int> t2 = new Task<int>(() =>
+            new Task(() =>
             {
-                val = ReceiveUpdates();
-                return val;
-            });
-            t2.Start();
-
-            if (t2.Result == 1)
-            {
-                return;
-            }
+                ReceiveUpdates();
+            }).Start();
         }
     }
-
-}
+}*/

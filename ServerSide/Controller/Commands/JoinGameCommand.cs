@@ -22,11 +22,11 @@ namespace ServerSide
             MazeGame game = model.AddPlayer(args[0], client);
             NetworkStream stream = game.player1.GetStream();
             StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine(game.maze.ToString());
+            writer.WriteLine(game.maze.ToJSON());
             writer.Flush();
             stream = game.player2.GetStream();
             writer = new StreamWriter(stream);
-            writer.WriteLine(game.maze.ToString());
+            writer.WriteLine(game.maze.ToJSON());
             writer.Flush();
 
             return "YES";

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SearchAlgorithmsLib;
 using MazeLib;
 using System.Net.Sockets;
-
+using ServerSide.View;
 
 namespace ServerSide
 {
@@ -14,12 +14,15 @@ namespace ServerSide
 
     public class MazeModel : IModel
     {
+        IController controller;
         private Dictionary<string, MazeGame> mazeGames;
         private Dictionary<int, ISearcher<Position>> searchers;
         private Dictionary<string, Solution<Position>> solvedMazes;
 
-        public MazeModel()
+        public MazeModel(IController c)
         {
+            controller = c;
+
             //Dictionary to contain all mazeGames
             mazeGames = new Dictionary<string, MazeGame>();
 
@@ -33,14 +36,14 @@ namespace ServerSide
             searchers.Add(1, new DFS<Position>());
         }
 
-        public Maze GenerateMaze(string name, int row, int col, TcpClient client)
+        public Maze GenerateMaze(string name, int row, int col, TcpClient player)
         {
             //Creates the maze
             Maze newMaze = new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
             newMaze.Name = name;
 
             //Adds the current client as player1 to this game
-            MazeGame newGame = new MazeGame(newMaze, client);
+            MazeGame newGame = new MazeGame(newMaze, player);
 
             //Adds game to dictionary
             mazeGames.Add(name, newGame);
@@ -52,8 +55,25 @@ namespace ServerSide
 
         public string ListAllMazes()
         {
-            //return a JSON of all games in dictionary
-            return "YES";
+            List<string> keyList = new List<string>(this.mazeGames.Keys);
+            Console.WriteLine( keyList);
+
+            StringBuilder resultList = new StringBuilder();
+            resultList.Append("[\r\n");
+            
+
+
+            //return a JSON of; all games in dictionary
+            foreach(string key in mazeGames.Keys)
+            {
+                resultList.Append("\""+ key+"\",");
+                resultList.Append("\r\n");
+                
+            }
+            resultList.Append("]");
+            Console.WriteLine(resultList.ToString());
+            return resultList.ToString();
+            /////////return "YES";
         }
 
         public Solution<Position> SolveMaze(string name, int searchType)

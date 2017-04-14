@@ -1,5 +1,6 @@
 ﻿
 using ServerSide;
+using ServerSide.View;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,8 +23,16 @@ namespace ServerSide
         public MazeController(int port)
         {
             //ch = v;
-            port = port;
-            model = new MazeModel();
+            this.port = port;
+            
+            
+
+            // more commands...
+            
+        }
+
+        public void createCommands()
+        {
             commands = new Dictionary<string, ICommand>();
             commands.Add("generate", new GenerateMazeCommand(model));
             commands.Add("solve", new SolveMazeCommand(model));
@@ -32,10 +41,8 @@ namespace ServerSide
             commands.Add("join", new JoinGameCommand(model));
             commands.Add("play", new MoveCommand(model));
             commands.Add("close", new closeCommand(model));
-
-            // more commands...
-            
         }
+
         public string ExecuteCommand(string commandLine, TcpClient client)
         {
             string[] arr = commandLine.Split(' ');
@@ -44,6 +51,7 @@ namespace ServerSide
                 return "Command not found";
             string[] args = arr.Skip(1).ToArray();
             ICommand command = commands[commandKey];
+           // Player p = new Player(client);
             string results = command.Execute(args, client);
             //return command.Execute(args, client);
             return "YES";
@@ -51,7 +59,7 @@ namespace ServerSide
 
         public void Start()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
             listener = new TcpListener(ep);
 
             listener.Start();
@@ -65,6 +73,7 @@ namespace ServerSide
                     {
                         TcpClient client = listener.AcceptTcpClient();
                         Console.WriteLine("Got new connection");
+                      
                         ch.HandleClient(client);
                     }
                     catch (SocketException)

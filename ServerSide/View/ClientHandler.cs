@@ -12,9 +12,9 @@ namespace ServerSide
     {
         private IController controller;
 
-        public ClientHandler()
+        public ClientHandler(IController c)
         {
-            controller = new MazeController(5555);
+            controller = c;
         }
         public void HandleClient(TcpClient client)
         {
