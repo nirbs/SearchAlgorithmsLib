@@ -67,6 +67,10 @@ namespace ClientSide
                     input = Console.ReadLine();
                     string[] arr = input.Split(' ');
                     CommandKey = arr[0];
+                    if (!commands.ContainsKey(CommandKey))
+                    {
+                        Console.WriteLine("Wrong command, please type again");
+                    }
 
                 } while (!commands.ContainsKey(CommandKey));
                 //send input to Server
@@ -101,7 +105,7 @@ namespace ClientSide
 
             if (t2.Result == 1)
             {
-                return;
+                this.BeginGame();
             }
         }
     }
