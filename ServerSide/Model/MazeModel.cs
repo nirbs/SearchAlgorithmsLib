@@ -133,9 +133,9 @@ namespace ServerSide
 
         }
 
-        public Maze GetMaze(string name)
+        public MazeGame GetMaze(string name)
         {
-            return mazeGames[name].maze;
+            return mazeGames[name];
         }
 
         public TcpClient GetOpponent(TcpClient player)

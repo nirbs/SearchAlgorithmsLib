@@ -24,7 +24,7 @@ namespace ClientSide
 
             commands = new Dictionary<string, bool>
             { { "generate", true }, { "solve", true }, { "start", false }, { "list", false },
-                { "join", false }, { "play", false }, { "close", false } };
+                { "join", false }, { "play", false }, { "close", true } };
         }
 
 

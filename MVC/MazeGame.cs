@@ -12,10 +12,10 @@ namespace MVC
     {
         public TcpClient player1 { get; set; }
         public TcpClient player2 { get; set; }
-        public Maze maze { get; set; }
+        public MazeLib.Maze maze { get; set; }
 
 
-        public MazeGame(Maze m, TcpClient p1)
+        public MazeGame(MazeLib.Maze m, TcpClient p1)
         {
             player1 = p1;
             maze = m;
