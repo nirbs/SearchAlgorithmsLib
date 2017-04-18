@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -144,7 +145,9 @@ namespace ClientSide
 
         public void BeginGame()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            string clientPort = ConfigurationManager.AppSettings["port"];
+            string serverIp = ConfigurationManager.AppSettings["ip"];
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(serverIp), Int32.Parse(clientPort));
             MyTcp = new TcpClient();
             MyTcp.Connect(ep);
 
