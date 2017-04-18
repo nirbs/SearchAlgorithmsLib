@@ -94,19 +94,19 @@ namespace ClientSide
                 switch (CommandKey)
                 {
                     case "generate":
-                        if (arr[2] != null && arr[3] != null)
+                        if (arr.Length==4)
                         {
                             return true;
                         }
                         return false;
                     case "solve":
-                        if (arr[2] == "0" || arr[2] == "1")
+                        if (arr.Length==3 && (arr[2] == "0" || arr[2] == "1"))
                         {
                             return true;
                         }
                         return false;
                     case "start":
-                        if (arr[2] != null && arr[3] != null)
+                        if (arr.Length==4)
                         {
                             return true;
                         }
@@ -118,7 +118,7 @@ namespace ClientSide
                         }
                         return false;
                     case "join":
-                        if (arr[1] != null)
+                        if (arr.Length == 2)
                         {
                             return true;
                         }
@@ -130,7 +130,7 @@ namespace ClientSide
                         }
                         return false;
                     case "close":
-                        if (arr[1] != null)
+                        if (arr.Length==2)
                         {
                             return true;
                         }
