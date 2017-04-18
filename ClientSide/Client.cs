@@ -42,13 +42,13 @@ namespace ClientSide
 
                 Console.WriteLine("RESPONSE FROM SERVER:");
                 Console.WriteLine(response);
-            
+
 
                 //Send again, or connection closes
                 if (commands[CommandKey])
                 {
                     MyTcp.Close();
-                    
+
                     return 1;
                 }
             }
@@ -57,27 +57,91 @@ namespace ClientSide
         public void SendUpdates()
         {
             string input = "";
-            
+            bool check = false;
+
             // string commandKey = "";
-           
+
             while (true)
             {
                 do
                 {
                     input = Console.ReadLine();
-                    string[] arr = input.Split(' ');
-                    CommandKey = arr[0];
-                    if (!commands.ContainsKey(CommandKey))
+
+                    if (!checkValidity(input))
                     {
                         Console.WriteLine("Wrong command, please type again");
+                        check = true;
+                    }
+                    else
+                    {
+                        check = false;
                     }
 
-                } while (!commands.ContainsKey(CommandKey));
+                } while (check);
                 //send input to Server
                 MyWriter.WriteLine(input);
                 MyWriter.Flush();
             }
         }
+
+        public bool checkValidity(string command)
+        {
+            string[] arr = command.Split(' ');
+            CommandKey = arr[0];
+            if (commands.ContainsKey(CommandKey))
+            {
+                switch (CommandKey)
+                {
+                    case "generate":
+                        if (arr[2] != null && arr[3] != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    case "solve":
+                        if (arr[2] == "0" || arr[2] == "1")
+                        {
+                            return true;
+                        }
+                        return false;
+                    case "start":
+                        if (arr[2] != null && arr[3] != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    case "list":
+                        if (command.Length == CommandKey.Length)
+                        {
+                            return true;
+                        }
+                        return false;
+                    case "join":
+                        if (arr[1] != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    case "play":
+                        if (arr[1] == "right" || arr[1] == "left" || arr[1] == "up" || arr[1] == "down")
+                        {
+                            return true;
+                        }
+                        return false;
+                    case "close":
+                        if (arr[1] != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    default:
+                        return false;
+                }
+
+            }
+            return false;
+        }
+
         public void BeginGame()
         {
             IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
