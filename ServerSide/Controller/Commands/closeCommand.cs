@@ -4,29 +4,48 @@ using System.Net.Sockets;
 
 namespace ServerSide
 {
-    public class closeCommand : ICommand
+    /// <summary>
+    /// Implements ICommand, closes a specific game
+    /// </summary>
+    public class CloseCommand : ICommand
     {
-        private MazeModel model;
+        /// <summary>
+        /// Private member of a Maze Model
+        /// </summary>
+        private MazeModel Model;
 
-        public closeCommand(IModel model)
+        /// <summary>
+        /// Constructor for CloseCommand
+        /// </summary>
+        /// <param name="model"> receives a model to work with </param>
+        public CloseCommand(IModel model)
         {
-            this.model = model as MazeModel;
+            Model = model as MazeModel;
         }
 
+        /// <summary>
+        /// Execute method for Close - closes both players in game
+        /// </summary>
+        /// <param name="args"> name of the maze game to close </param>
+        /// <param name="client"> client who's game needs to be closed </param>
+        /// <returns> returns a string of the result of the command's execution </returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            string name = args[0];
-            TcpClient opp = model.GetOpponent(client);
-            NetworkStream n = opp.GetStream();
-            StreamWriter s = new StreamWriter(n);
+            string Name = args[0];
 
-            
+            //Gets the TCPClient that is playing against this client
+            TcpClient Opponent = Model.GetOpponent(client);
+
+            //Stream for opponent
+            NetworkStream Stream = Opponent.GetStream();
+            StreamWriter writer = new StreamWriter(Stream);
+            //stream for this client
             NetworkStream net = client.GetStream();
             StreamWriter st = new StreamWriter(net);
 
             string str = "opponent closed game.\r\nGame ended";
-            s.WriteLine(str);
-            s.Flush();
+            writer.WriteLine(str);
+            writer.Flush();
             str = "closing game";
             st.WriteLine(str);
             st.Flush();

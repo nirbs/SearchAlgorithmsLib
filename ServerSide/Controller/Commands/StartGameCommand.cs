@@ -5,6 +5,9 @@ using System.Net.Sockets;
 
 namespace ServerSide
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class StartGameCommand : ICommand
     {
         private MazeModel model;

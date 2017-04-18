@@ -13,15 +13,6 @@ namespace ServerSide
     public class MazeGame
     {
 
-       // public delegate void OpponentMovedEventHandler(object game, PlayEventArgs playerMove);
-
-       // public event OpponentMovedEventHandler OpponentMoved;
-
-        //////protected virtual void OnOpponenetMoved(string move)
-      //  {
-         ////   OpponentMoved?.Invoke(this, new PlayEventArgs() { Move = move, Name = maze.Name });
-      //  }
-
         public TcpClient player1 { get; set; }
         public TcpClient player2 { get; set; }
         public Maze maze { get; set; }

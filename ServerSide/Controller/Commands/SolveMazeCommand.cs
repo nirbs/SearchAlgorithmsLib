@@ -8,33 +8,51 @@ using System.Net.Sockets;
 
 namespace ServerSide
 {
+    /// <summary>
+    /// Command to solve a requested maze
+    /// </summary>
     public class SolveMazeCommand : ICommand
     {
-        private MazeModel model;
 
+        /// <summary>
+        /// Private Model member
+        /// </summary>
+        private MazeModel Model;
+
+        /// <summary>
+        /// constructor that sets the model of the command
+        /// </summary>
+        /// <param name="model"></param>
         public SolveMazeCommand(IModel model)
         {
-            this.model = model as MazeModel;
+            Model = model as MazeModel;
         }
 
+        /// <summary>
+        ///  requests the mazes solution from the model
+        /// </summary>
+        /// <param name="args"> the name of the maze to be solved </param>
+        /// <param name="client"> client that wants the solution </param>
+        /// <returns></returns>
         public string Execute(string[] args, TcpClient client = null)
         {
             //Solves an existing maze
-            SearchAlgorithmsLib.Solution<Position> solution = model.SolveMaze(args[0], int.Parse(args[1]));
-            StepSolution stSol = new StepSolution(args[0], solution);
-            stSol.CreateStepSolution();
-
-            Console.WriteLine("Solution for maze: {0}", stSol.Json());
+            Solution<Position> Solution = Model.SolveMaze(args[0], int.Parse(args[1]));
+            //Creates a step by step solution
+            StepSolution StepSol = new StepSolution(args[0], Solution);
+            StepSol.CreateStepSolution();
             //Send to client
-            NetworkStream n = client.GetStream();
-            StreamWriter w = new StreamWriter(n);
-            w.WriteLine(stSol.Json());
-            w.Flush();
-            //Close client
-            //client.Close();
-            return stSol.ToString();
+            NetworkStream Stream = client.GetStream();
+            StreamWriter Writer = new StreamWriter(Stream);
+            Writer.WriteLine(StepSol.Json());
+            Writer.Flush();
+            return StepSol.ToString();
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class StepSolution
     {
         private string Name { get; set; }

@@ -40,7 +40,7 @@ namespace ServerSide
             commands.Add("list", new ListAllGamesCommand(model));
             commands.Add("join", new JoinGameCommand(model));
             commands.Add("play", new MoveCommand(model));
-            commands.Add("close", new closeCommand(model));
+            commands.Add("close", new CloseCommand(model));
         }
 
         public string ExecuteCommand(string commandLine, TcpClient client)

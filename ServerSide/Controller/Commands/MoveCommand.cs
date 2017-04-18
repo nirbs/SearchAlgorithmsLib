@@ -11,37 +11,58 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
+    /// <summary>
+    /// command to move a step in the maze
+    /// </summary>
     class MoveCommand : ICommand
     {
-        MazeModel model;
+        /// <summary>
+        /// private member of model
+        /// </summary>
+        MazeModel Model;
         
-        public MoveCommand(IModel m)
+        /// <summary>
+        /// constructor that sets model
+        /// </summary>
+        /// <param name="model"></param>
+        public MoveCommand(IModel model)
         {
-            model = m as MazeModel;
+            Model = model as MazeModel;
            
         }
+
+        /// <summary>
+        /// Notifies the client's opponent of his move in the game
+        /// </summary>
+        /// <param name="args"> the clients move </param>
+        /// <param name="client"> client that moved</param>
+        /// <returns></returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            TcpClient opp = model.GetOpponent(client);
-
-            NetworkStream n = opp.GetStream();
-            StreamWriter s = new StreamWriter(n);
-            ////s.WriteLine(m.ToJSON());
-            //s.Flush();
-            string jsonString = Json(model.GetGameOfClient(client).maze.Name, args[0]);
-            s.WriteLine(jsonString);
-            s.Flush();
+            TcpClient Opponent = Model.GetOpponent(client);
+            NetworkStream Stream = Opponent.GetStream();
+            StreamWriter Writer = new StreamWriter(Stream);
+            //Turns the move into a JSON to send to opponent
+            string jsonString = Json(Model.GetGameOfClient(client).maze.Name, args[0]);
+            Writer.WriteLine(jsonString);
+            Writer.Flush();
             return "YES";
         }
 
+        /// <summary>
+        /// method to turn the name of the game and direction into a JSON
+        /// </summary>
+        /// <param name="name"> name of maze </param>
+        /// <param name="movement"> direction of movement </param>
+        /// <returns> returns string in JSON form </returns>
         public string Json(string name, string movement)
         {
-            JObject jsonString = new JObject
+            JObject JsonString = new JObject
             {
                 ["Name"] = name,
                 ["Direction"] = movement,
             };
-            return jsonString.ToString();
+            return JsonString.ToString();
         }
 
         

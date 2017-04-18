@@ -39,6 +39,12 @@ namespace ServerSide
         public Maze GenerateMaze(string name, int row, int col, TcpClient player)
         {
             //Creates the maze
+
+            if(mazeGames.Keys.Contains(name))
+            {
+                mazeGames[name].player1 = player;
+                return mazeGames[name].maze;
+            }
             Maze newMaze = new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
             newMaze.Name = name;
 
