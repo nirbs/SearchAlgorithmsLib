@@ -13,37 +13,62 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
+
+    /// <summary>
+    /// Implementation of IController, for a maze Controller
+    /// </summary>
     class MazeController : IController
     {
+        /// <summary>
+        /// a dictionary to contain all commands for controller
+        /// </summary>
         private Dictionary<string, ICommand> commands;
-        public IModel model { get; set; }
-        private int port;
-        private TcpListener listener;
-        public IClientHandler ch { get; set; }
+        /// <summary>
+        /// Model member
+        /// </summary>
+        public IModel Model { get; set; }
+        /// <summary>
+        /// Port number for controller
+        /// </summary>
+        private int Port;
+        /// <summary>
+        /// Listener member for TCP
+        /// </summary>
+        private TcpListener Listener;
+        /// <summary>
+        /// Client handler to handle clients
+        /// </summary>
+        public IClientHandler MyClientHandler { get; set; }
         
+        /// <summary>
+        /// Contructor for Maze Controller, sets the port
+        /// </summary>
+        /// <param name="port"></param>
         public MazeController(int port)
         {
-            //ch = v;
-            this.port = port;
-            
-            
-
-            // more commands...
-            
+            Port = port;
         }
-
-        public void createCommands()
+        /// <summary>
+        /// Creates all the commands for the controller
+        /// </summary>
+        public void InitializeCommands()
         {
             commands = new Dictionary<string, ICommand>();
-            commands.Add("generate", new GenerateMazeCommand(model));
-            commands.Add("solve", new SolveMazeCommand(model));
-            commands.Add("start", new StartGameCommand(model));
-            commands.Add("list", new ListAllGamesCommand(model));
-            commands.Add("join", new JoinGameCommand(model));
-            commands.Add("play", new MoveCommand(model));
-            commands.Add("close", new CloseCommand(model));
+            commands.Add("generate", new GenerateMazeCommand(Model));
+            commands.Add("solve", new SolveMazeCommand(Model));
+            commands.Add("start", new StartGameCommand(Model));
+            commands.Add("list", new ListAllGamesCommand(Model));
+            commands.Add("join", new JoinGameCommand(Model));
+            commands.Add("play", new MoveCommand(Model));
+            commands.Add("close", new CloseCommand(Model));
         }
 
+        /// <summary>
+        /// Executes a given command using its dictionary
+        /// </summary>
+        /// <param name="commandLine"> command to perform from user </param>
+        /// <param name="client"> client to perform command for </param>
+        /// <returns>Returns a string</returns>
         public string ExecuteCommand(string commandLine, TcpClient client)
         {
             string[] arr = commandLine.Split(' ');
@@ -52,19 +77,21 @@ namespace ServerSide
                 return "Command not found";
             string[] args = arr.Skip(1).ToArray();
             ICommand command = commands[commandKey];
-           // Player p = new Player(client);
             string results = command.Execute(args, client);
-            //return command.Execute(args, client);
-            return "YES";
+            return results;
         }
 
+        /// <summary>
+        /// Method to begin controller's job. Creates tasks for every client
+        /// that connects and sends the client to the client handler
+        /// </summary>
         public void Start()
         {
             string listenPort = ConfigurationManager.AppSettings["port"];
             IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Int32.Parse(listenPort));
-            listener = new TcpListener(ep);
+            Listener = new TcpListener(ep);
 
-            listener.Start();
+            Listener.Start();
             Console.WriteLine("Waiting for connections...");
 
             Task task = new Task(() =>
@@ -73,10 +100,9 @@ namespace ServerSide
                 {
                     try
                     {
-                        TcpClient client = listener.AcceptTcpClient();
-                        Console.WriteLine("Got new connection");
-                      
-                        ch.HandleClient(client);
+                        TcpClient client = Listener.AcceptTcpClient();
+                        Console.WriteLine("New Player Connected");
+                        MyClientHandler.HandleClient(client);
                     }
                     catch (SocketException)
                     {

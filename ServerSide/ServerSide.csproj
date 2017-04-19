@@ -55,7 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\Commands\TcpClien.cs" />
     <Compile Include="View\ClientHandler.cs" />
     <Compile Include="Controller\Commands\CloseCommand.cs" />
     <Compile Include="Controller\Commands\GenerateMazeCommand.cs" />
@@ -73,9 +72,7 @@
     <Compile Include="Model\MazeModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controller\Server.cs" />
     <Compile Include="View\IView.cs" />
-    <Compile Include="View\Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

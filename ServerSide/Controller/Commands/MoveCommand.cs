@@ -44,7 +44,7 @@ namespace ServerSide
             {
                 return "";
             }
-            string jsonString = Json(Model.GetGameOfClient(client).maze.Name, args[0]);
+            string jsonString = Json(Model.GetGameOfClient(client).Maze.Name, args[0]);
 
             foreach (TcpClient Opponent in Opponents)
             {

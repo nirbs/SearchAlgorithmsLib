@@ -14,19 +14,13 @@ namespace ServerSide
 
         public static void Main(string[] args)
         {
-            MazeController controller = new MazeController(8000);
-            ClientHandler ch= new ClientHandler(controller);
-            controller.ch = ch;
-            MazeModel model = new MazeModel(controller);
-            controller.model = model;
-            controller.createCommands(); 
-
-            controller.Start();
-
-
-
-            //Server server = new Server(8000, new ClientHandler());
-           
+            MazeController Controller = new MazeController(8000);
+            IClientHandler ch = new ClientHandler(Controller);
+            Controller.MyClientHandler = ch;
+            MazeModel model = new MazeModel(Controller);
+            Controller.Model = model;
+            Controller.InitializeCommands(); 
+            Controller.Start();
             Console.Read();
         }
 

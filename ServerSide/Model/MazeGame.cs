@@ -10,27 +10,48 @@ using System.Threading.Tasks;
 
 namespace ServerSide
 {
+
+    /// <summary>
+    /// class to hold players of a certain game 
+    /// </summary>
     public class MazeGame
     {
-
+        /// <summary>
+        /// List of all players of this game
+        /// </summary>
         public List<TcpClient> Players { get; set; }
-       // public TcpClient player2 { get; set; }
-        public Maze maze { get; set; } 
+        /// <summary>
+        /// Maze of the game
+        /// </summary>
+        public Maze Maze { get; set; } 
+        /// <summary>
+        /// Property to check if the game is full or
+        /// if they can still add a player
+        /// </summary>
         public bool IsFull { get; set; }
 
-
+        /// <summary>
+        /// Constructor - sets the maze
+        /// </summary>
+        /// <param name="m"> maze </param>
         public MazeGame(Maze m)
         {
             Players = new List<TcpClient>();
-            maze = m;
+            Maze = m;
         }
-
+        /// <summary>
+        /// Adds a player to the game
+        /// </summary>
+        /// <param name="player"> player to add </param>
         public void AddPlayer(TcpClient player)
         {
             Players.Add(player);
-            
         }
-
+        /// <summary>
+        /// Method to check if a player belongs to this game
+        /// </summary>
+        /// <param name="player"> player to check </param>
+        /// <returns> if the player belongs to the game </returns>
         public bool HasPlayer(TcpClient player)
         {
             foreach(TcpClient P in Players)
@@ -40,27 +61,17 @@ namespace ServerSide
             }
             return false;
         }
-
+        
+        /// <summary>
+        /// Gets the opponents of a player from his game
+        /// </summary>
+        /// <param name="player"> Player to get its opponents </param>
+        /// <returns> List of opponents </returns>
         public List<TcpClient> GetOpponents(TcpClient player)
         {
             List<TcpClient> Opp = new List<TcpClient>(Players);
             Opp.Remove(player);
             return Opp;
         }
-
-
-
-       
     }
-
-   /*public class PlayEventArgs : EventArgs
-    {
-        public string Move { get; set; }
-        public string Name { get; set; }
-        public string ToString()
-        {
-            return "TO DO";
-        }
-        
-    }*/
 }

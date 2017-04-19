@@ -51,22 +51,41 @@ namespace ServerSide
     }
 
     /// <summary>
-    /// 
+    /// class to create a step by step solution
     /// </summary>
     public class StepSolution
     {
+        /// <summary>
+        /// Name of maze solution
+        /// </summary>
         private string Name { get; set; }
-        private Solution<Position> solution { get; set; }
+        /// <summary>
+        /// Solution of the maze
+        /// </summary>
+        private Solution<Position> StepByStepSolution { get; set; }
+        /// <summary>
+        /// string of solution itself
+        /// </summary>
         private string stepSolution;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name"> name of solution </param>
+        /// <param name="solution"> solution itself </param>
         public StepSolution(string name, Solution<Position> solution)
         {
-            this.Name = name;
-            this.solution = solution;
+            Name = name;
+            StepByStepSolution = solution;
             stepSolution = "";
         }
+
+        /// <summary>
+        /// Method to create the step by step solution
+        /// </summary>
         public void CreateStepSolution()
         {
-            foreach (State<Position> pos in solution.sol)
+            foreach (State<Position> pos in StepByStepSolution.sol)
             {
                 State<Position> p = pos.CameFrom;
                 if (p != null)
@@ -90,12 +109,17 @@ namespace ServerSide
                 }
             }
         }
+
+        /// <summary>
+        /// Method to turn the solution into JSON form
+        /// </summary>
+        /// <returns> the string of the solution, JSON form</returns>
         public string Json()
         {
             JObject sol = new JObject {
                 ["Name"] = Name,
                 ["Solution"] = stepSolution,
-                ["NodesEvaluated"] = solution.getNodes(),
+                ["NodesEvaluated"] = StepByStepSolution.getNodes(),
         };
             return sol.ToString();
         }

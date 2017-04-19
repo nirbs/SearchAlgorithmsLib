@@ -46,7 +46,7 @@ namespace ServerSide
             {
                 NetworkStream Stream = P.GetStream();
                 StreamWriter Writer = new StreamWriter(Stream);
-                Writer.WriteLine(game.maze.ToJSON());
+                Writer.WriteLine(game.Maze.ToJSON());
                 Writer.Flush();
             }
             return "YES";

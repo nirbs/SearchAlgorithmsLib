@@ -11,18 +11,46 @@ using ServerSide.View;
 namespace ServerSide
 {
 
-
+    /// <summary>
+    /// Specific implementation of IModel, to contain the maze game logic
+    /// </summary>
     public class MazeModel : IModel
     {
-        IController controller;
+
+        /// <summary>
+        /// Controller member
+        /// </summary>
+        IController Controller;
+
+        /// <summary>
+        /// Dictionary to contain multi player games
+        /// </summary>
         private Dictionary<string, MazeGame> MultiPlayerGames;
+
+        /// <summary>
+        /// Dictionary to contain single player games
+        /// </summary>
         private Dictionary<string, MazeGame> SinglePlayerGames;
+
+        /// <summary>
+        /// Dictionary with all types of searchers
+        /// </summary>
         private Dictionary<int, ISearcher<Position>> Searchers;
+
+        /// <summary>
+        /// Dictionary of all mazes that have already been solved
+        /// </summary>
         private Dictionary<string, Solution<Position>> SolvedMazes;
 
+
+        /// <summary>
+        /// Constructor which sets the controller and
+        /// initializes all the dictionaries
+        /// </summary>
+        /// <param name="c"> controller </param>
         public MazeModel(IController c)
         {
-            controller = c;
+            Controller = c;
 
             //Dictionary to contain all mazeGames
             SinglePlayerGames = new Dictionary<string, MazeGame>();
@@ -39,6 +67,15 @@ namespace ServerSide
             Searchers.Add(1, new DFS<Position>());
         }
 
+        /// <summary>
+        /// Method to generate a maze and add it to a dictionary
+        /// </summary>
+        /// <param name="name"> name of the new maze to generate </param>
+        /// <param name="row"> number of rows </param>
+        /// <param name="col"> number of columns </param>
+        /// <param name="player"> client that wants to create the maze </param>
+        /// <param name="gameType"> single or multi-player maze </param>
+        /// <returns> Returns the new maze </returns>
         public Maze GenerateMaze(string name, int row, int col, TcpClient player, string gameType)
         {
             //Creates the maze
@@ -48,47 +85,40 @@ namespace ServerSide
             //Adds the current client as player1 to this game
             MazeGame NewGame = new MazeGame(NewMaze);
 
-            //Adds game to dictionary
-
             if (gameType == "Single")
             {
                 SinglePlayerGames.Add(name, NewGame);
-            } else
+            }
+            else //Multi Player
             {
                 Console.WriteLine("generated Multi Game");
                 NewGame.AddPlayer(player);
                 MultiPlayerGames.Add(name, NewGame);
-                Console.WriteLine(MultiPlayerGames[name].maze.Name);
-                
+                Console.WriteLine(MultiPlayerGames[name].Maze.Name);
+
             }
-
-           // mazeGames.Add(name, newGame);
-
-            //Console.WriteLine("Maze {0} added to dictionary", name);
-            //Console.WriteLine("Current dictionary size: {0}", mazeGames.Count);
             return NewMaze;
         }
 
+
+        /// <summary>
+        /// Method to return a list of all multi player games
+        /// </summary>
+        /// <returns> list of names of mazes </returns>
         public string ListAllMazes()
         {
             List<string> KeyList = new List<string>(MultiPlayerGames.Keys);
-           // Console.WriteLine( keyList);
-
             StringBuilder resultList = new StringBuilder();
             resultList.Append("[\r\n");
 
-
-
             //return a JSON of; all games in dictionary
-            Console.Write("Size of dictionary: {0}", MultiPlayerGames.Keys.Count);
-            foreach(string key in MultiPlayerGames.Keys)
+            foreach (string key in MultiPlayerGames.Keys)
             {
                 resultList.Append("\"" + key + "\"");
                 if (MultiPlayerGames[key].IsFull)
                 {
                     resultList.Append("->GAME FULL");
                 }
-                
                 resultList.Append(",\r\n");
                 
             }
@@ -97,6 +127,12 @@ namespace ServerSide
             return resultList.ToString();
         }
 
+        /// <summary>
+        /// Solves a requested maze
+        /// </summary>
+        /// <param name="name"> name of maze to solve </param>
+        /// <param name="searchType"> type of search to perform </param>
+        /// <returns> Solution for the maze </returns>
         public Solution<Position> SolveMaze(string name, int searchType)
         {
 
@@ -117,7 +153,7 @@ namespace ServerSide
                  Game = MultiPlayerGames[name];
             }
            
-            Maze MazeToSolve = Game.maze;
+            Maze MazeToSolve = Game.Maze;
 
             //Creates a new searchable with start and end point of selected maze
             MazeSearchable Searchable = new MazeSearchable(new State<Position>(MazeToSolve.InitialPos), new State<Position>(MazeToSolve.GoalPos));
@@ -131,19 +167,11 @@ namespace ServerSide
             //solves the maze
             Solution<Position> Sol = MazeSearcher.search(Searchable);
             
-            /*Console.WriteLine("Solution for maze:");
-            foreach (State<Position> stat in sol.sol)
-            {
-                Console.WriteLine(stat.getState().ToString());
-            }*/
-
             //Adds solution to Dictionary
             SolvedMazes.Add(name, Sol);
 
-            //COnvert to JSON and return to client HERE OR IN COMMAND?
+            //Convert to JSON and return to client HERE OR IN COMMAND?
             return Sol;
-
-            
         }
 
         public void Move(TcpClient player)
@@ -151,23 +179,35 @@ namespace ServerSide
             //get other player and notify that this player moved using getOpponents
         }
 
+        /// <summary>
+        /// Adds a player to a requested game
+        /// </summary>
+        /// <param name="game"> name of game to join </param>
+        /// <param name="player"> player that wants to join </param>
+        /// <returns> returns the Maze Game that was just joined </returns>
         public MazeGame AddPlayer(string game, TcpClient player)
         {
-            Console.WriteLine("Player added to {0}", game);
             if(!MultiPlayerGames[game].IsFull)
                 MultiPlayerGames[game].AddPlayer(player);
-            //mazeGames[game].AddPlayer(player);
             return MultiPlayerGames[game];
         }
 
-
-
+        /// <summary>
+        /// gets a maze generator
+        /// </summary>
+        /// <param name="row"> how many rows </param>
+        /// <param name="col"> how many columns</param>
+        /// <returns> the new maze generator </returns>
         public Maze GenerateMaze(int row, int col)
         {
             return new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
-
         }
 
+        /// <summary>
+        /// Gets the maze Game of a given name
+        /// </summary>
+        /// <param name="name"> which game to return </param>
+        /// <returns> the requested game </returns>
         public MazeGame GetMaze(string name)
         {
             if(SinglePlayerGames.Keys.Contains(name))
@@ -179,9 +219,16 @@ namespace ServerSide
             }
         }
 
+
+        /// <summary>
+        /// Gets all players playing against 'player'
+        /// </summary>
+        /// <param name="player"> current player </param>
+        /// <returns> list of all opponents </returns>
         public List<TcpClient> GetOpponents(TcpClient player)
         {
             List<TcpClient> Opponents = new List<TcpClient>();
+            //Finds the game that player belongs to, and returns its other players
             foreach (MazeGame v in MultiPlayerGames.Values)
             {
                 if (v.HasPlayer(player))
@@ -190,6 +237,12 @@ namespace ServerSide
             return Opponents;
         }
 
+
+        /// <summary>
+        /// Returns the game of given client
+        /// </summary>
+        /// <param name="client"> client</param>
+        /// <returns> the clients game</returns>
         public MazeGame GetGameOfClient(TcpClient client)
         {
             foreach(MazeGame Game in MultiPlayerGames.Values)
@@ -203,6 +256,10 @@ namespace ServerSide
             
         }
 
+        /// <summary>
+        /// Removes the requested game from the dictionary of multi-player games
+        /// </summary>
+        /// <param name="game"> name of game to end </param>
         public void EndGame(string game)
         {
             MultiPlayerGames.Remove(game);
