@@ -37,7 +37,7 @@ namespace ServerSide
         /// <returns> returns a string of the result of the execution </returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            Maze Maze = Model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), null);
+            Maze Maze = Model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Single");
             Console.WriteLine(Maze.ToJSON());
             NetworkStream n = client.GetStream();
             StreamWriter s = new StreamWriter(n);

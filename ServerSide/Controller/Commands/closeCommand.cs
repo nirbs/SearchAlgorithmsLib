@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
@@ -34,18 +35,23 @@ namespace ServerSide
             string Name = args[0];
 
             //Gets the TCPClient that is playing against this client
-            TcpClient Opponent = Model.GetOpponent(client);
-
-            //Stream for opponent
-            NetworkStream Stream = Opponent.GetStream();
-            StreamWriter writer = new StreamWriter(Stream);
+            List<TcpClient> Opponent = Model.GetOpponents(client);
+            string str;
+            foreach( TcpClient O in Opponent)
+            {
+                //Stream for opponent
+                NetworkStream Stream = O.GetStream();
+                StreamWriter writer = new StreamWriter(Stream);
+                str = "opponent closed game.\r\nGame ended";
+                writer.WriteLine(str);
+                writer.Flush();
+            }
+            
             //stream for this client
             NetworkStream net = client.GetStream();
             StreamWriter st = new StreamWriter(net);
 
-            string str = "opponent closed game.\r\nGame ended";
-            writer.WriteLine(str);
-            writer.Flush();
+           
             str = "closing game";
             st.WriteLine(str);
             st.Flush();

@@ -21,7 +21,7 @@ namespace ServerSide
         public string Execute(string[] args, TcpClient client = null)
         {
             //split up args
-            model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client);
+            model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Multi");
             return "YES";
         }
     }

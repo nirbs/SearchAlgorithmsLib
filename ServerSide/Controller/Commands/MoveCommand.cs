@@ -39,13 +39,22 @@ namespace ServerSide
         /// <returns></returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            TcpClient Opponent = Model.GetOpponent(client);
-            NetworkStream Stream = Opponent.GetStream();
-            StreamWriter Writer = new StreamWriter(Stream);
-            //Turns the move into a JSON to send to opponent
+            List<TcpClient> Opponents = Model.GetOpponents(client);
+            if(Opponents.Count == 0)
+            {
+                return "";
+            }
             string jsonString = Json(Model.GetGameOfClient(client).maze.Name, args[0]);
-            Writer.WriteLine(jsonString);
-            Writer.Flush();
+
+            foreach (TcpClient Opponent in Opponents)
+            {
+                NetworkStream Stream = Opponent.GetStream();
+                StreamWriter Writer = new StreamWriter(Stream);
+                //Turns the move into a JSON to send to opponent
+                Writer.WriteLine(jsonString);
+                Writer.Flush();
+            }
+            
             return "YES";
         }
 

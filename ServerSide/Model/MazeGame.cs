@@ -13,21 +13,42 @@ namespace ServerSide
     public class MazeGame
     {
 
-        public TcpClient player1 { get; set; }
-        public TcpClient player2 { get; set; }
-        public Maze maze { get; set; }
+        public List<TcpClient> Players { get; set; }
+       // public TcpClient player2 { get; set; }
+        public Maze maze { get; set; } 
+        public bool IsFull { get; set; }
 
 
-        public MazeGame(Maze m, TcpClient p1)
+        public MazeGame(Maze m)
         {
-            player1 = p1;
+            Players = new List<TcpClient>();
             maze = m;
         }
 
-        public void AddPlayer(TcpClient p2)
+        public void AddPlayer(TcpClient player)
         {
-            player2 = p2;
+            Players.Add(player);
+            
         }
+
+        public bool HasPlayer(TcpClient player)
+        {
+            foreach(TcpClient P in Players)
+            {
+                if (player == P)
+                    return true;
+            }
+            return false;
+        }
+
+        public List<TcpClient> GetOpponents(TcpClient player)
+        {
+            List<TcpClient> Opp = new List<TcpClient>(Players);
+            Opp.Remove(player);
+            return Opp;
+        }
+
+
 
        
     }

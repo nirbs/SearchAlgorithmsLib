@@ -1,5 +1,6 @@
 ﻿using ServerSide;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
@@ -39,15 +40,15 @@ namespace ServerSide
 
             //Returns the game that this player joined
             MazeGame game = Model.AddPlayer(args[0], client);
-            NetworkStream Stream = game.player1.GetStream();
-            StreamWriter Writer = new StreamWriter(Stream);
-            Writer.WriteLine(game.maze.ToJSON());
-            Writer.Flush();
-            //Sends to second player
-            Stream = game.player2.GetStream();
-            Writer = new StreamWriter(Stream);
-            Writer.WriteLine(game.maze.ToJSON());
-            Writer.Flush();
+            game.IsFull = true;
+            List<TcpClient> Players = game.Players;
+            foreach(TcpClient P in Players)
+            {
+                NetworkStream Stream = P.GetStream();
+                StreamWriter Writer = new StreamWriter(Stream);
+                Writer.WriteLine(game.maze.ToJSON());
+                Writer.Flush();
+            }
             return "YES";
         }
     }
