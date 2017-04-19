@@ -3,6 +3,7 @@ using ServerSide;
 using ServerSide.View;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -59,7 +60,8 @@ namespace ServerSide
 
         public void Start()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            string listenPort = ConfigurationManager.AppSettings["port"];
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Int32.Parse(listenPort));
             listener = new TcpListener(ep);
 
             listener.Start();

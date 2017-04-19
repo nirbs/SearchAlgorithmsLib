@@ -36,13 +36,14 @@ namespace ServerSide
 
             //Gets the TCPClient that is playing against this client
             List<TcpClient> Opponent = Model.GetOpponents(client);
+            Model.EndGame(Name);
             string str;
             foreach( TcpClient O in Opponent)
             {
                 //Stream for opponent
                 NetworkStream Stream = O.GetStream();
                 StreamWriter writer = new StreamWriter(Stream);
-                str = "opponent closed game.\r\nGame ended";
+                str = "Opponent closed game.\r\nGame ended";
                 writer.WriteLine(str);
                 writer.Flush();
             }

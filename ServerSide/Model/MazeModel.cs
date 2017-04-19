@@ -203,6 +203,11 @@ namespace ServerSide
             
         }
 
+        public void EndGame(string game)
+        {
+            MultiPlayerGames.Remove(game);
+        }
+
     }
 
 }
