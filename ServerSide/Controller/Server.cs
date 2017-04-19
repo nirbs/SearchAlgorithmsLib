@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -22,7 +23,8 @@ namespace ServerSide
         }
         public void Start()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23456);
+            string listenPort = ConfigurationManager.AppSettings["port"];
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Int32.Parse(listenPort));
             listener = new TcpListener(ep);
 
             listener.Start();

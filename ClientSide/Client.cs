@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -93,19 +94,19 @@ namespace ClientSide
                 switch (CommandKey)
                 {
                     case "generate":
-                        if (arr[2] != null && arr[3] != null)
+                        if (arr.Length==4)
                         {
                             return true;
                         }
                         return false;
                     case "solve":
-                        if (arr[2] == "0" || arr[2] == "1")
+                        if (arr.Length==3 && (arr[2] == "0" || arr[2] == "1"))
                         {
                             return true;
                         }
                         return false;
                     case "start":
-                        if (arr[2] != null && arr[3] != null)
+                        if (arr.Length==4)
                         {
                             return true;
                         }
@@ -117,7 +118,7 @@ namespace ClientSide
                         }
                         return false;
                     case "join":
-                        if (arr[1] != null)
+                        if (arr.Length == 2)
                         {
                             return true;
                         }
@@ -129,7 +130,7 @@ namespace ClientSide
                         }
                         return false;
                     case "close":
-                        if (arr[1] != null)
+                        if (arr.Length==2)
                         {
                             return true;
                         }
@@ -144,7 +145,9 @@ namespace ClientSide
 
         public void BeginGame()
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
+            string clientPort = ConfigurationManager.AppSettings["port"];
+            string serverIp = ConfigurationManager.AppSettings["ip"];
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(serverIp), Int32.Parse(clientPort));
             MyTcp = new TcpClient();
             MyTcp.Connect(ep);
 
