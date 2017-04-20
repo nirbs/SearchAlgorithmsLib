@@ -17,9 +17,8 @@ namespace ServerSide
         {
             IController Controller = new MazeController(8000);
             IView ch = new ClientHandler(Controller);
-       // Controller.MyClientHandler = ch;
             Controller.SetView(ch);
-            MazeModel model = new MazeModel(Controller);
+            IModel model = new MazeModel(Controller);
             Controller.SetModel(model);
             Controller.InitializeCommands(); 
             Controller.Start();
