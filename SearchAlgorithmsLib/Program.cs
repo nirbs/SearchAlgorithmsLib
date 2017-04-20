@@ -32,20 +32,20 @@ namespace ObjectAdapter
             SearchAlgorithmsLib.State<MazeLib.Position> entrance = new SearchAlgorithmsLib.State<MazeLib.Position>(maze.InitialPos);
             SearchAlgorithmsLib.State<MazeLib.Position> exit = new SearchAlgorithmsLib.State<MazeLib.Position>(maze.GoalPos);
             SearchAlgorithmsLib.MazeSearchable mazeSearchable = new SearchAlgorithmsLib.MazeSearchable(entrance, exit);
-            mazeSearchable.setMaze(maze);
+            mazeSearchable.SetMaze(maze);
             SearchAlgorithmsLib.BFS<MazeLib.Position> bfs = new SearchAlgorithmsLib.BFS<MazeLib.Position>();
-            SearchAlgorithmsLib.Solution<MazeLib.Position> bfsSolution =  bfs.search(mazeSearchable);
+            SearchAlgorithmsLib.Solution<MazeLib.Position> bfsSolution =  bfs.Search(mazeSearchable);
 
             //Solves in DFS
             
 
             //prints how many checks algo did
-            Console.WriteLine($"BFS DID {bfs.getNumberOfNodesEvaluated()} evaluations");
+            Console.WriteLine($"BFS DID {bfs.GetNumberOfNodesEvaluated()} evaluations");
 
             SearchAlgorithmsLib.DFS<MazeLib.Position> dfs = new SearchAlgorithmsLib.DFS<MazeLib.Position>();
-            SearchAlgorithmsLib.Solution<MazeLib.Position> dfsSolution = dfs.search(mazeSearchable);
+            SearchAlgorithmsLib.Solution<MazeLib.Position> dfsSolution = dfs.Search(mazeSearchable);
 
-            Console.WriteLine($"DFS DID {dfs.getNumberOfNodesEvaluated()} evaluations");
+            Console.WriteLine($"DFS DID {dfs.GetNumberOfNodesEvaluated()} evaluations");
 
         }
     }

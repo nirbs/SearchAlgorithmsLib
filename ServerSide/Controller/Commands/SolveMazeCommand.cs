@@ -85,20 +85,20 @@ namespace ServerSide
         /// </summary>
         public void CreateStepSolution()
         {
-            foreach (State<Position> pos in StepByStepSolution.sol)
+            foreach (State<Position> pos in StepByStepSolution.Sol)
             {
                 State<Position> p = pos.CameFrom;
                 if (p != null)
                 {
-                    if (p.getState().Col < pos.getState().Col)
+                    if (p.GetState().Col < pos.GetState().Col)
                     {
                         stepSolution += "1";
                     }
-                    else if (p.getState().Row < pos.getState().Row)
+                    else if (p.GetState().Row < pos.GetState().Row)
                     {
                         stepSolution += "3";
                     }
-                    else if (p.getState().Col > pos.getState().Col)
+                    else if (p.GetState().Col > pos.GetState().Col)
                     {
                         stepSolution += "2";
                     }
@@ -119,7 +119,7 @@ namespace ServerSide
             JObject sol = new JObject {
                 ["Name"] = Name,
                 ["Solution"] = stepSolution,
-                ["NodesEvaluated"] = StepByStepSolution.getNodes(),
+                ["NodesEvaluated"] = StepByStepSolution.GetNodes(),
         };
             return sol.ToString();
         }

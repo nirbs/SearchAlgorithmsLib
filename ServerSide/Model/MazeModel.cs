@@ -159,13 +159,13 @@ namespace ServerSide
             MazeSearchable Searchable = new MazeSearchable(new State<Position>(MazeToSolve.InitialPos), new State<Position>(MazeToSolve.GoalPos));
 
             //Sets the searchable's maze
-            Searchable.setMaze(MazeToSolve);
+            Searchable.SetMaze(MazeToSolve);
 
             //selects the wanted search method
             ISearcher<Position> MazeSearcher = Searchers[searchType];
 
             //solves the maze
-            Solution<Position> Sol = MazeSearcher.search(Searchable);
+            Solution<Position> Sol = MazeSearcher.Search(Searchable);
             
             //Adds solution to Dictionary
             SolvedMazes.Add(name, Sol);
