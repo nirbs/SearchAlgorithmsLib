@@ -10,25 +10,46 @@ using System.Threading.Tasks;
 
 namespace ClientSide
 {
+    /// <summary>
+    /// Client class
+    /// </summary>
     public class Client
     {
+        /// <summary>
+        /// Stream writer member
+        /// </summary>
         public StreamWriter MyWriter { get; set; }
+        /// <summary>
+        /// StreamReader member
+        /// </summary>
         public StreamReader MyReader { get; set; }
+        /// <summary>
+        /// Tcp member
+        /// </summary>
         public TcpClient MyTcp { get; set; }
+        /// <summary>
+        /// DIctionary of valid commands for user to input
+        /// </summary>
         Dictionary<string, bool> commands;
+        /// <summary>
+        /// Current command key
+        /// </summary>
         string CommandKey;
 
-
+        /// <summary>
+        /// Constructor for Client, initializes valid commands
+        /// </summary>
         public Client()
         {
-
-
             commands = new Dictionary<string, bool>
             { { "generate", true }, { "solve", true }, { "start", false }, { "list", false },
                 { "join", false }, { "play", false }, { "close", true } };
         }
 
-
+        /// <summary>
+        /// Method to constantly be able to receive messages from server
+        /// </summary>
+        /// <returns> returns a value to know if the user closed </returns>
         public int ReceiveUpdates()
         {
             while (true)
@@ -39,28 +60,25 @@ namespace ClientSide
                     response += "\r\n";
                     response += MyReader.ReadLine();
                 }
-
-
                 Console.WriteLine("RESPONSE FROM SERVER:");
                 Console.WriteLine(response);
-
 
                 //Send again, or connection closes
                 if (commands[CommandKey])
                 {
                     MyTcp.Close();
-
                     return 1;
                 }
             }
         }
 
+        /// <summary>
+        /// Method to be able to always send messages to server
+        /// </summary>
         public void SendUpdates()
         {
             string input = "";
             bool check = false;
-
-            // string commandKey = "";
 
             while (true)
             {
@@ -79,12 +97,18 @@ namespace ClientSide
                     }
 
                 } while (check);
+
                 //send input to Server
                 MyWriter.WriteLine(input);
                 MyWriter.Flush();
             }
         }
 
+        /// <summary>
+        /// Checks if the user input is a valid request
+        /// </summary>
+        /// <param name="command"> requested command </param>
+        /// <returns> valid or not </returns>
         public bool checkValidity(string command)
         {
             string[] arr = command.Split(' ');
@@ -143,6 +167,10 @@ namespace ClientSide
             return false;
         }
 
+
+        /// <summary>
+        /// Begins the logic of the client
+        /// </summary>
         public void BeginGame()
         {
             string clientPort = ConfigurationManager.AppSettings["port"];
@@ -157,21 +185,26 @@ namespace ClientSide
 
             int val = 0;
 
+            //Task to send messages
             Task t1 = new Task(() =>
             {
                 SendUpdates();
             });
             t1.Start();
 
+            //Task to receive messages
             Task<int> t2 = new Task<int>(() =>
             {
                 val = ReceiveUpdates();
+                
                 return val;
             });
             t2.Start();
+            
 
             if (t2.Result == 1)
             {
+                
                 this.BeginGame();
             }
         }

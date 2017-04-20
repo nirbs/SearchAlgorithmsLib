@@ -17,7 +17,7 @@ namespace ServerSide
     /// <summary>
     /// Implementation of IController, for a maze Controller
     /// </summary>
-    class MazeController : IController
+    public class MazeController : IController
     {
         /// <summary>
         /// a dictionary to contain all commands for controller
@@ -38,7 +38,7 @@ namespace ServerSide
         /// <summary>
         /// Client handler to handle clients
         /// </summary>
-        public IClientHandler MyClientHandler { get; set; }
+        public ClientHandler MyClientHandler { get; set; }
         
         /// <summary>
         /// Contructor for Maze Controller, sets the port
@@ -113,6 +113,16 @@ namespace ServerSide
             });
             task.Start();
 
+        }
+
+        public void SetModel(IModel m)
+        {
+            Model = m;
+        }
+
+        public void SetView(IView v)
+        {
+            MyClientHandler = v as ClientHandler;
         }
     }
     }

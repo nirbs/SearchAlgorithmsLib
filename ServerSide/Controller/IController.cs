@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerSide.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -21,8 +22,17 @@ namespace ServerSide
         string ExecuteCommand(string commandLine, TcpClient client);
 
         /// <summary>
+        /// To initializes commands
+        /// </summary>
+        void InitializeCommands();
+        /// <summary>
         /// Method to start execution 
         /// </summary>
         void Start();
+
+        void SetModel(IModel m);
+
+
+        void SetView(IView v);
     }
 }

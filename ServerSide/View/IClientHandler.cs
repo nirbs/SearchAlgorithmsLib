@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerSide.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -10,7 +11,7 @@ namespace ServerSide
     /// <summary>
     /// Interface for classes which handle Clients
     /// </summary>
-    public interface IClientHandler
+    public interface IClientHandler : IView
     {
         /// <summary>
         /// Method to handle a client

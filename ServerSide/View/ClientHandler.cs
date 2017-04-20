@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerSide.View;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace ServerSide
     /// <summary>
     /// Class to handle the clients once they are connected to the server
     /// </summary>
-    public class ClientHandler: IClientHandler
+    public class ClientHandler: IView
     {
         /// <summary>
         /// Controller member
@@ -41,7 +42,6 @@ namespace ServerSide
                 StreamWriter writer = new StreamWriter(stream);
                 while (true) {
                     string commandLine = reader.ReadLine();
-                    Console.WriteLine("Player wants to ", commandLine);
                     string result = Controller.ExecuteCommand(commandLine, client);
 
                 }

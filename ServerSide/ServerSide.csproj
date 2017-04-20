@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\Controller.cs" />
     <Compile Include="View\ClientHandler.cs" />
     <Compile Include="Controller\Commands\CloseCommand.cs" />
     <Compile Include="Controller\Commands\GenerateMazeCommand.cs" />

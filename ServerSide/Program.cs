@@ -1,4 +1,5 @@
 ﻿
+using ServerSide.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,12 @@ namespace ServerSide
 
         public static void Main(string[] args)
         {
-            MazeController Controller = new MazeController(8000);
-            IClientHandler ch = new ClientHandler(Controller);
-            Controller.MyClientHandler = ch;
+            IController Controller = new MazeController(8000);
+            IView ch = new ClientHandler(Controller);
+       // Controller.MyClientHandler = ch;
+            Controller.SetView(ch);
             MazeModel model = new MazeModel(Controller);
-            Controller.Model = model;
+            Controller.SetModel(model);
             Controller.InitializeCommands(); 
             Controller.Start();
             Console.Read();
