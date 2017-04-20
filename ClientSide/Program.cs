@@ -12,7 +12,7 @@ namespace ClientSide
         {
             Client player = new Client();
 
-                player.BeginGame();
+                player.startAll();
 
         }
     }

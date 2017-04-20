@@ -75,7 +75,7 @@ namespace ClientSide
         /// <summary>
         /// Method to be able to always send messages to server
         /// </summary>
-        public void SendUpdates()
+        public void SendUpdates(string newInput)
         {
             string input = "";
             bool check = false;
@@ -84,15 +84,23 @@ namespace ClientSide
             {
                 do
                 {
-                    input = Console.ReadLine();
-
-                    if (!checkValidity(input))
+                    if (newInput=="empty")
                     {
-                        Console.WriteLine("Wrong command, please type again");
-                        check = true;
+                        input = Console.ReadLine();
+                        if (!checkValidity(input))
+                        {
+                            Console.WriteLine("Wrong command, please type again");
+                            check = true;
+                        }
+                        else
+                        {
+                            check = false;
+                        }
                     }
                     else
                     {
+                        input = newInput;
+                        newInput = "empty;";
                         check = false;
                     }
 
@@ -101,6 +109,10 @@ namespace ClientSide
                 //send input to Server
                 MyWriter.WriteLine(input);
                 MyWriter.Flush();
+                if (commands[CommandKey])
+                {
+                    return;
+                }
             }
         }
 
@@ -171,24 +183,20 @@ namespace ClientSide
         /// <summary>
         /// Begins the logic of the client
         /// </summary>
-        public void BeginGame()
+        public int BeginGame(string input)
         {
-            string clientPort = ConfigurationManager.AppSettings["port"];
-            string serverIp = ConfigurationManager.AppSettings["ip"];
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(serverIp), Int32.Parse(clientPort));
-            MyTcp = new TcpClient();
-            MyTcp.Connect(ep);
+            
+            OpenSocket();
 
-            NetworkStream stream = MyTcp.GetStream();
-            MyReader = new StreamReader(stream);
-            MyWriter = new StreamWriter(stream);
+            
 
             int val = 0;
 
             //Task to send messages
             Task t1 = new Task(() =>
             {
-                SendUpdates();
+               SendUpdates(input);
+                return;
             });
             t1.Start();
 
@@ -200,12 +208,61 @@ namespace ClientSide
                 return val;
             });
             t2.Start();
-            
 
-            if (t2.Result == 1)
+            return t2.Result;
+            /*if (t2.Result == 1)
             {
-                
-                this.BeginGame();
+                while (true)
+                {
+                    string newInput = Console.ReadLine();
+                    if (checkValidity(newInput))
+                    {
+                        this.BeginGame(newInput);
+                    }
+                    
+                }
+            }*/
+        }
+
+        public void OpenSocket()
+        {
+            string clientPort = ConfigurationManager.AppSettings["port"];
+            string serverIp = ConfigurationManager.AppSettings["ip"];
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(serverIp), Int32.Parse(clientPort));
+            MyTcp = new TcpClient();
+            MyTcp.Connect(ep);
+
+            NetworkStream stream = MyTcp.GetStream();
+            MyReader = new StreamReader(stream);
+            MyWriter = new StreamWriter(stream);
+        }
+
+        public void startAll()
+        {
+            int check = BeginGame("empty");
+            if (check==1)
+            {
+                while (true)
+                {
+                    string newInput = Console.ReadLine();
+                    if (newInput.Equals("list"))
+                    {
+                        Console.WriteLine("listttttt");
+                    }
+                    if (checkValidity(newInput))
+                    {
+                        this.BeginGame(newInput);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong command, please type again");
+                    }
+
+                }
+            }
+            else
+            {
+                Console.WriteLine("not 1 not good");
             }
         }
     }
