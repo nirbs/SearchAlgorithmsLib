@@ -36,6 +36,9 @@ namespace ClientSide
         /// </summary>
         string CommandKey;
 
+        bool CheckClose = false;
+        string newInput = "empty";
+
         /// <summary>
         /// Constructor for Client, initializes valid commands
         /// </summary>
@@ -55,6 +58,7 @@ namespace ClientSide
             while (true)
             {
                 string response = MyReader.ReadLine();
+                string closeCheck= "Opponent closed game.\r\nGame ended";
                 while (MyReader.Peek() > 0)
                 {
                     response += "\r\n";
@@ -62,9 +66,12 @@ namespace ClientSide
                 }
                 Console.WriteLine("RESPONSE FROM SERVER:");
                 Console.WriteLine(response);
-
+                if (response.Equals(closeCheck))
+                {
+                    CheckClose = true;
+                }
                 //Send again, or connection closes
-                if (commands[CommandKey])
+                if (commands[CommandKey] || CheckClose)
                 {
                     MyTcp.Close();
                     return 1;
@@ -75,10 +82,10 @@ namespace ClientSide
         /// <summary>
         /// Method to be able to always send messages to server
         /// </summary>
-        public void SendUpdates(string newInput)
+        public void SendUpdates()
         {
             string input = "";
-            bool check = false;
+            bool CommandCheck = false;
 
             while (true)
             {
@@ -86,30 +93,37 @@ namespace ClientSide
                 {
                     if (newInput=="empty")
                     {
+                        Console.WriteLine("inside:");
                         input = Console.ReadLine();
                         if (!checkValidity(input))
                         {
                             Console.WriteLine("Wrong command, please type again");
-                            check = true;
+                            CommandCheck = true;
                         }
                         else
                         {
-                            check = false;
+                            CommandCheck = false;
+                            if (CheckClose)
+                            {
+                                newInput = input;
+                                CheckClose = false;
+                                return;
+                            }
                         }
                     }
                     else
                     {
                         input = newInput;
-                        newInput = "empty;";
-                        check = false;
+                        newInput = "empty";
+                        CommandCheck = false;
                     }
 
-                } while (check);
+                } while (CommandCheck);
 
                 //send input to Server
                 MyWriter.WriteLine(input);
                 MyWriter.Flush();
-                if (commands[CommandKey])
+                if (commands[CommandKey] || CheckClose)
                 {
                     return;
                 }
@@ -183,7 +197,7 @@ namespace ClientSide
         /// <summary>
         /// Begins the logic of the client
         /// </summary>
-        public int BeginGame(string input)
+        public int BeginGame()
         {
             
             OpenSocket();
@@ -195,7 +209,7 @@ namespace ClientSide
             //Task to send messages
             Task t1 = new Task(() =>
             {
-               SendUpdates(input);
+               SendUpdates();
                 return;
             });
             t1.Start();
@@ -239,23 +253,27 @@ namespace ClientSide
 
         public void startAll()
         {
-            int check = BeginGame("empty");
+            int check = BeginGame();
             if (check==1)
             {
                 while (true)
                 {
-                    string newInput = Console.ReadLine();
-                    if (newInput.Equals("list"))
+                    if (newInput == "empty")
                     {
-                        Console.WriteLine("listttttt");
-                    }
-                    if (checkValidity(newInput))
-                    {
-                        this.BeginGame(newInput);
+                        Console.WriteLine("outside:");
+                        newInput = Console.ReadLine();
+                        if (checkValidity(newInput))
+                        {
+                            this.BeginGame();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Wrong command, please type again");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Wrong command, please type again");
+                        BeginGame();
                     }
 
                 }
