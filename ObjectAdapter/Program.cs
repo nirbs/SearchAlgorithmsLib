@@ -20,7 +20,7 @@ namespace ObjectAdapter
             //create DFSmaze generator
 
             MazeGeneratorLib.DFSMazeGenerator mazeGenerator = new MazeGeneratorLib.DFSMazeGenerator();
-            MazeLib.Maze mazush =  mazeGenerator.Generate(200,200);
+            MazeLib.Maze mazush = mazeGenerator.Generate(200, 200);
             string s = mazush.ToString();
 
             //prints maze
@@ -34,10 +34,10 @@ namespace ObjectAdapter
             SearchAlgorithmsLib.MazeSearchable mazeSearchable = new SearchAlgorithmsLib.MazeSearchable(entrance, exit);
             mazeSearchable.SetMaze(mazush);
             SearchAlgorithmsLib.BFS<MazeLib.Position> bfs = new SearchAlgorithmsLib.BFS<MazeLib.Position>();
-            SearchAlgorithmsLib.Solution<MazeLib.Position> bfsSolution =  bfs.Search(mazeSearchable);
+            SearchAlgorithmsLib.Solution<MazeLib.Position> bfsSolution = bfs.Search(mazeSearchable);
 
             //Solves in DFS
-            
+
 
             //prints how many checks algo did
             Console.WriteLine($"BFS DID {bfs.GetNumberOfNodesEvaluated()} evaluations");

@@ -11,7 +11,7 @@ namespace ClientSide
         static void Main(string[] args)
         {
             Client player = new Client();
-            player.startAll();
+            player.StartAll();
 
         }
     }
