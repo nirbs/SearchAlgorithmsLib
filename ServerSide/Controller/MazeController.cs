@@ -30,23 +30,23 @@ namespace ServerSide
         /// <summary>
         /// Port number for controller
         /// </summary>
-        private int Port;
+        private int port;
         /// <summary>
         /// Listener member for TCP
         /// </summary>
-        private TcpListener Listener;
+        private TcpListener listener;
         /// <summary>
         /// Client handler to handle clients
         /// </summary>
         public ClientHandler MyClientHandler { get; set; }
-        
+
         /// <summary>
         /// Contructor for Maze Controller, sets the port
         /// </summary>
         /// <param name="port"></param>
         public MazeController(int port)
         {
-            Port = port;
+            this.port = port;
         }
         /// <summary>
         /// Creates all the commands for the controller
@@ -77,9 +77,8 @@ namespace ServerSide
                 return "Command not found";
             string[] args = arr.Skip(1).ToArray();
             ICommand command = commands[commandKey];
+            Console.WriteLine("Executing Command...");
             string results = command.Execute(args, client);
-            Console.WriteLine("command executed");
-
             return results;
         }
 
@@ -91,9 +90,9 @@ namespace ServerSide
         {
             string listenPort = ConfigurationManager.AppSettings["port"];
             IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Int32.Parse(listenPort));
-            Listener = new TcpListener(ep);
+            listener = new TcpListener(ep);
 
-            Listener.Start();
+            listener.Start();
             Console.WriteLine("Waiting for connections...");
 
             Task task = new Task(() =>
@@ -102,7 +101,7 @@ namespace ServerSide
                 {
                     try
                     {
-                        TcpClient client = Listener.AcceptTcpClient();
+                        TcpClient client = listener.AcceptTcpClient();
                         Console.WriteLine("New Player Connected");
                         MyClientHandler.HandleClient(client);
                     }
@@ -127,5 +126,5 @@ namespace ServerSide
             MyClientHandler = v as ClientHandler;
         }
     }
-    }
+}
 

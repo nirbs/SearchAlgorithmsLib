@@ -13,7 +13,7 @@ namespace ServerSide
         /// <summary>
         /// Private member of a Maze Model
         /// </summary>
-        private MazeModel Model;
+        private MazeModel model;
 
         /// <summary>
         /// Constructor for CloseCommand
@@ -21,7 +21,7 @@ namespace ServerSide
         /// <param name="model"> receives a model to work with </param>
         public CloseCommand(IModel model)
         {
-            Model = model as MazeModel;
+            this.model = model as MazeModel;
         }
 
         /// <summary>
@@ -35,33 +35,29 @@ namespace ServerSide
             string Name = args[0];
 
             //Gets the TCPClient that is playing against this client
-            List<TcpClient> Opponent = Model.GetOpponents(client);
-            Model.EndGame(Name);
+            List<TcpClient> opponent = model.GetOpponents(client);
+            model.EndGame(Name);
             string str;
-            foreach( TcpClient O in Opponent)
+            foreach (TcpClient O in opponent)
             {
                 //Stream for opponent
-                NetworkStream Stream = O.GetStream();
-                StreamWriter writer = new StreamWriter(Stream);
+                NetworkStream stream = O.GetStream();
+                StreamWriter writer = new StreamWriter(stream);
                 str = "Opponent closed game.\r\nGame ended";
                 writer.WriteLine(str);
                 writer.WriteLine("#");
                 writer.Flush();
-                writer = new StreamWriter(Stream);
-                writer.WriteLine("CLOSE");
+                writer = new StreamWriter(stream);
                 writer.Flush();
             }
-            
+
             //stream for this client
             NetworkStream net = client.GetStream();
             StreamWriter st = new StreamWriter(net);
-
-           
-            str = "closing game";
+            str = "Closing Game: " + Name;
             st.WriteLine(str);
             st.WriteLine("#");
             st.Flush();
-
             return "CLOSE";
         }
     }

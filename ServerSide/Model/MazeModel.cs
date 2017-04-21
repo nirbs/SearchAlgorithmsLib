@@ -20,27 +20,27 @@ namespace ServerSide
         /// <summary>
         /// Controller member
         /// </summary>
-        IController Controller;
+        IController controller;
 
         /// <summary>
         /// Dictionary to contain multi player games
         /// </summary>
-        private Dictionary<string, MazeGame> MultiPlayerGames;
+        private Dictionary<string, MazeGame> multiPlayerGames;
 
         /// <summary>
         /// Dictionary to contain single player games
         /// </summary>
-        private Dictionary<string, MazeGame> SinglePlayerGames;
+        private Dictionary<string, MazeGame> singlePlayerGames;
 
         /// <summary>
         /// Dictionary with all types of searchers
         /// </summary>
-        private Dictionary<int, ISearcher<Position>> Searchers;
+        private Dictionary<int, ISearcher<Position>> searchers;
 
         /// <summary>
         /// Dictionary of all mazes that have already been solved
         /// </summary>
-        private Dictionary<string, Solution<Position>> SolvedMazes;
+        private Dictionary<string, Solution<Position>> solvedMazes;
 
 
         /// <summary>
@@ -50,21 +50,21 @@ namespace ServerSide
         /// <param name="c"> controller </param>
         public MazeModel(IController c)
         {
-            Controller = c;
+            controller = c;
 
             //Dictionary to contain all mazeGames
-            SinglePlayerGames = new Dictionary<string, MazeGame>();
-            MultiPlayerGames = new Dictionary<string, MazeGame>();
+            singlePlayerGames = new Dictionary<string, MazeGame>();
+            multiPlayerGames = new Dictionary<string, MazeGame>();
 
 
             //Contains solutions to the mazes
-            SolvedMazes = new Dictionary<string, Solution<Position>>();
+            solvedMazes = new Dictionary<string, Solution<Position>>();
 
-            Searchers = new Dictionary<int, ISearcher<Position>>();
+            searchers = new Dictionary<int, ISearcher<Position>>();
 
             //Adds searchers to dictionary
-            Searchers.Add(0, new BFS<Position>());
-            Searchers.Add(1, new DFS<Position>());
+            searchers.Add(0, new BFS<Position>());
+            searchers.Add(1, new DFS<Position>());
         }
 
         /// <summary>
@@ -79,25 +79,26 @@ namespace ServerSide
         public Maze GenerateMaze(string name, int row, int col, TcpClient player, string gameType)
         {
             //Creates the maze
-            Maze NewMaze = new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
-            NewMaze.Name = name;
+            Maze newMaze = new MazeGeneratorLib.DFSMazeGenerator().Generate(row, col);
+            newMaze.Name = name;
 
             //Adds the current client as player1 to this game
-            MazeGame NewGame = new MazeGame(NewMaze);
+            MazeGame newGame = new MazeGame(newMaze);
 
             if (gameType == "Single")
             {
-                SinglePlayerGames.Add(name, NewGame);
+                Console.WriteLine("Single-Player Game '{0}' Added", name);
+                singlePlayerGames.Add(name, newGame);
             }
             else //Multi Player
             {
-                Console.WriteLine("generated Multi Game");
-                NewGame.AddPlayer(player);
-                MultiPlayerGames.Add(name, NewGame);
-                Console.WriteLine(MultiPlayerGames[name].Maze.Name);
+                Console.WriteLine("Multi-Player Game '{0}' Added", name);
+                newGame.AddPlayer(player);
+                multiPlayerGames.Add(name, newGame);
+                Console.WriteLine(multiPlayerGames[name].Maze.Name);
 
             }
-            return NewMaze;
+            return newMaze;
         }
 
 
@@ -107,23 +108,22 @@ namespace ServerSide
         /// <returns> list of names of mazes </returns>
         public string ListAllMazes()
         {
-            List<string> KeyList = new List<string>(MultiPlayerGames.Keys);
+            List<string> KeyList = new List<string>(multiPlayerGames.Keys);
             StringBuilder resultList = new StringBuilder();
             resultList.Append("[\r\n");
 
             //return a JSON of; all games in dictionary
-            foreach (string key in MultiPlayerGames.Keys)
+            foreach (string key in multiPlayerGames.Keys)
             {
                 resultList.Append("\"" + key + "\"");
-                if (MultiPlayerGames[key].IsFull)
+                if (multiPlayerGames[key].IsFull)
                 {
-                    resultList.Append("->GAME FULL");
+                    resultList.Append("-> GAME FULL");
                 }
                 resultList.Append(",\r\n");
                 
             }
             resultList.Append("]");
-            Console.WriteLine(resultList.ToString());
             return resultList.ToString();
         }
 
@@ -137,41 +137,42 @@ namespace ServerSide
         {
 
             //Already solved this maze
-            if (SolvedMazes.ContainsKey(name))
+            if (solvedMazes.ContainsKey(name))
             {
                 Console.WriteLine("The maze '{0}' has already been solved...Returning solution", name);
-                return SolvedMazes[name];
+                // return solvedMazes[name];
+                return null;
             }
 
             //Selects wanted game from dictionary
-            MazeGame Game;
-            if (SinglePlayerGames.Keys.Contains(name))
+            MazeGame game;
+            if (singlePlayerGames.Keys.Contains(name))
             {
-                Game = SinglePlayerGames[name];
+                game = singlePlayerGames[name];
             } else
             {
-                 Game = MultiPlayerGames[name];
+                 game = multiPlayerGames[name];
             }
            
-            Maze MazeToSolve = Game.Maze;
+            Maze mazeToSolve = game.Maze;
 
             //Creates a new searchable with start and end point of selected maze
-            MazeSearchable Searchable = new MazeSearchable(new State<Position>(MazeToSolve.InitialPos), new State<Position>(MazeToSolve.GoalPos));
+            MazeSearchable searchable = new MazeSearchable(new State<Position>(mazeToSolve.InitialPos), new State<Position>(mazeToSolve.GoalPos));
 
             //Sets the searchable's maze
-            Searchable.SetMaze(MazeToSolve);
+            searchable.SetMaze(mazeToSolve);
 
             //selects the wanted search method
-            ISearcher<Position> MazeSearcher = Searchers[searchType];
+            ISearcher<Position> mazeSearcher = searchers[searchType];
 
             //solves the maze
-            Solution<Position> Sol = MazeSearcher.Search(Searchable);
+            Solution<Position> solution = mazeSearcher.Search(searchable);
             
             //Adds solution to Dictionary
-            SolvedMazes.Add(name, Sol);
+            solvedMazes.Add(name, solution);
 
             //Convert to JSON and return to client HERE OR IN COMMAND?
-            return Sol;
+            return solution;
         }
 
         public void Move(TcpClient player)
@@ -187,9 +188,9 @@ namespace ServerSide
         /// <returns> returns the Maze Game that was just joined </returns>
         public MazeGame AddPlayer(string game, TcpClient player)
         {
-            if(!MultiPlayerGames[game].IsFull)
-                MultiPlayerGames[game].AddPlayer(player);
-            return MultiPlayerGames[game];
+            if(!multiPlayerGames[game].IsFull)
+                multiPlayerGames[game].AddPlayer(player);
+            return multiPlayerGames[game];
         }
 
         /// <summary>
@@ -210,12 +211,12 @@ namespace ServerSide
         /// <returns> the requested game </returns>
         public MazeGame GetMaze(string name)
         {
-            if(SinglePlayerGames.Keys.Contains(name))
+            if(singlePlayerGames.Keys.Contains(name))
             {
-                return SinglePlayerGames[name];
+                return singlePlayerGames[name];
             } else
             {
-                return MultiPlayerGames[name];
+                return multiPlayerGames[name];
             }
         }
 
@@ -229,7 +230,7 @@ namespace ServerSide
         {
             List<TcpClient> Opponents = new List<TcpClient>();
             //Finds the game that player belongs to, and returns its other players
-            foreach (MazeGame v in MultiPlayerGames.Values)
+            foreach (MazeGame v in multiPlayerGames.Values)
             {
                 if (v.HasPlayer(player))
                     Opponents = v.GetOpponents(player);
@@ -245,7 +246,7 @@ namespace ServerSide
         /// <returns> the clients game</returns>
         public MazeGame GetGameOfClient(TcpClient client)
         {
-            foreach(MazeGame Game in MultiPlayerGames.Values)
+            foreach(MazeGame Game in multiPlayerGames.Values)
             {
                 if(Game.HasPlayer(client))
                 {
@@ -262,7 +263,7 @@ namespace ServerSide
         /// <param name="game"> name of game to end </param>
         public void EndGame(string game)
         {
-            MultiPlayerGames.Remove(game);
+            multiPlayerGames.Remove(game);
         }
 
     }

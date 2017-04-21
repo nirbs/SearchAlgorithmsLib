@@ -23,7 +23,7 @@ namespace ServerSide
         /// <summary>
         /// Maze of the game
         /// </summary>
-        public Maze Maze { get; set; } 
+        public Maze Maze { get; set; }
         /// <summary>
         /// Property to check if the game is full or
         /// if they can still add a player
@@ -54,14 +54,14 @@ namespace ServerSide
         /// <returns> if the player belongs to the game </returns>
         public bool HasPlayer(TcpClient player)
         {
-            foreach(TcpClient P in Players)
+            foreach (TcpClient P in Players)
             {
                 if (player == P)
                     return true;
             }
             return false;
         }
-        
+
         /// <summary>
         /// Gets the opponents of a player from his game
         /// </summary>
@@ -69,9 +69,9 @@ namespace ServerSide
         /// <returns> List of opponents </returns>
         public List<TcpClient> GetOpponents(TcpClient player)
         {
-            List<TcpClient> Opp = new List<TcpClient>(Players);
-            Opp.Remove(player);
-            return Opp;
+            List<TcpClient> opponents = new List<TcpClient>(Players);
+            opponents.Remove(player);
+            return opponents;
         }
     }
 }

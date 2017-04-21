@@ -17,7 +17,7 @@ namespace ServerSide
         /// <summary>
         /// Private model member
         /// </summary>
-        private MazeModel Model;
+        private MazeModel model;
 
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace ServerSide
         /// <param name="model"> model which is cast to MazeModel</param>
         public GenerateMazeCommand(IModel model)
         {
-            Model = model as MazeModel;
+            this.model = model as MazeModel;
         }
 
         /// <summary>
@@ -37,13 +37,12 @@ namespace ServerSide
         /// <returns> returns a string of the result of the execution </returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            Maze Maze = Model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Single");
-           // Console.WriteLine(Maze.ToJSON());
-            NetworkStream n = client.GetStream();
-            StreamWriter s = new StreamWriter(n);
-            s.WriteLine(Maze.ToJSON());
-            s.WriteLine("#");
-            s.Flush();
+            Maze maze = model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Single");
+            NetworkStream stream = client.GetStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine(maze.ToJSON());
+            writer.WriteLine("#");
+            writer.Flush();
             return "CLOSE";
         }
     }

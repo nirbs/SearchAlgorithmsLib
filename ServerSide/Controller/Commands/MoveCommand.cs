@@ -19,16 +19,16 @@ namespace ServerSide
         /// <summary>
         /// private member of model
         /// </summary>
-        MazeModel Model;
-        
+        MazeModel model;
+
         /// <summary>
         /// constructor that sets model
         /// </summary>
         /// <param name="model"></param>
         public MoveCommand(IModel model)
         {
-            Model = model as MazeModel;
-           
+            this.model = model as MazeModel;
+
         }
 
         /// <summary>
@@ -39,25 +39,25 @@ namespace ServerSide
         /// <returns></returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            List<TcpClient> Opponents = Model.GetOpponents(client);
-            if(Opponents.Count == 0)
+            List<TcpClient> opponents = model.GetOpponents(client);
+            if (opponents.Count == 0)
             {
                 return "";
             }
-            string jsonString = Json(Model.GetGameOfClient(client).Maze.Name, args[0]);
+            string jsonString = Json(model.GetGameOfClient(client).Maze.Name, args[0]);
 
-            foreach (TcpClient Opponent in Opponents)
+            foreach (TcpClient Opponent in opponents)
             {
-                NetworkStream Stream = Opponent.GetStream();
-                StreamWriter Writer = new StreamWriter(Stream);
+                NetworkStream stream = Opponent.GetStream();
+                StreamWriter writer = new StreamWriter(stream);
                 //Turns the move into a JSON to send to opponent
-                Writer.WriteLine(jsonString);
-                Writer.WriteLine("#");
-                Writer.Flush();
+                writer.WriteLine(jsonString);
+                writer.WriteLine("#");
+                writer.Flush();
             }
-            StreamWriter S = new StreamWriter(client.GetStream());
-            S.WriteLine("#");
-            S.Flush();
+            StreamWriter s = new StreamWriter(client.GetStream());
+            s.WriteLine("#");
+            s.Flush();
             return "DO NOT CLOSE";
         }
 
@@ -69,15 +69,15 @@ namespace ServerSide
         /// <returns> returns string in JSON form </returns>
         public string Json(string name, string movement)
         {
-            JObject JsonString = new JObject
+            JObject jsonString = new JObject
             {
                 ["Name"] = name,
                 ["Direction"] = movement,
             };
-            return JsonString.ToString();
+            return jsonString.ToString();
         }
 
-        
+
     }
 
 

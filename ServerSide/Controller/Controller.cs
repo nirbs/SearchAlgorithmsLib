@@ -10,8 +10,8 @@ namespace ServerSide.Controller
 {
     abstract class Controller : IController
     {
-        IModel Model;
-        IView ClientHandler;
+        IModel model;
+        IView clientHandler;
 
         public abstract string ExecuteCommand(string commandLine, TcpClient client);
         public abstract void InitializeCommands();

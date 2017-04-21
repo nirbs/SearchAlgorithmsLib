@@ -12,7 +12,7 @@ namespace ServerSide
         /// <summary>
         /// private member model
         /// </summary>
-        private MazeModel Model;
+        private MazeModel model;
 
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace ServerSide
         /// <param name="model"> model to work with </param>
         public ListAllGamesCommand(IModel model)
         {
-            Model = model as MazeModel;
+            this.model = model as MazeModel;
         }
 
         /// <summary>
@@ -32,12 +32,12 @@ namespace ServerSide
         /// <returns> results of execution </returns>
         public string Execute(string[] args, TcpClient client = null)
         {
-            string AllGames =  Model.ListAllMazes();
-            NetworkStream Stream = client.GetStream();
-            StreamWriter Writer = new StreamWriter(Stream);
-            Writer.WriteLine(AllGames);
-            Writer.WriteLine("#");
-            Writer.Flush();
+            string allGames = model.ListAllMazes();
+            NetworkStream stream = client.GetStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine(allGames);
+            writer.WriteLine("#");
+            writer.Flush();
             return "DO NOT CLOSE";
         }
     }

@@ -12,19 +12,19 @@ namespace ServerSide
     /// <summary>
     /// Class to handle the clients once they are connected to the server
     /// </summary>
-    public class ClientHandler: IView
+    public class ClientHandler : IView
     {
         /// <summary>
         /// Controller member
         /// </summary>
-        private IController Controller;
+        private IController controller;
         /// <summary>
         /// Contructor which sets the controller
         /// </summary>
         /// <param name="c">controller</param>
         public ClientHandler(IController c)
         {
-            Controller = c;
+            controller = c;
         }
 
         /// <summary>
@@ -37,13 +37,12 @@ namespace ServerSide
             new Task(() =>
             {
                 NetworkStream stream = client.GetStream();
-    
                 StreamReader reader = new StreamReader(stream);
                 StreamWriter writer = new StreamWriter(stream);
-                while (true) {
+                while (true)
+                {
                     string commandLine = reader.ReadLine();
-                    string result = Controller.ExecuteCommand(commandLine, client);
-                    Console.WriteLine("result from Controller: {0}", result);
+                    string result = controller.ExecuteCommand(commandLine, client);
                     writer.WriteLine(result);
                     writer.Flush();
                 }

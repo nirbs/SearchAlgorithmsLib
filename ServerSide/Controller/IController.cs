@@ -11,7 +11,7 @@ namespace ServerSide
     /// <summary>
     /// Interface for controller job
     /// </summary>
-   public interface IController
+    public interface IController
     {
         /// <summary>
         /// Method to execute a requested command

@@ -14,7 +14,7 @@ namespace ServerSide
         /// <summary>
         /// Private model member
         /// </summary>
-        private MazeModel Model;
+        private MazeModel model;
 
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace ServerSide
         /// <param name="model"> model </param>
         public StartGameCommand(IModel model)
         {
-            this.Model = model as MazeModel;
+            this.model = model as MazeModel;
         }
 
         /// <summary>
@@ -35,10 +35,10 @@ namespace ServerSide
         public string Execute(string[] args, TcpClient client = null)
         {
             //split up args
-            Model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Multi");
-            StreamWriter S = new StreamWriter(client.GetStream());
-            S.WriteLine("#");
-            S.Flush();
+            model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Multi");
+            StreamWriter writer = new StreamWriter(client.GetStream());
+            writer.WriteLine("#");
+            writer.Flush();
             return "DO NOT CLOSE";
         }
     }

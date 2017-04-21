@@ -8,6 +8,6 @@ namespace ServerSide
 {
     public interface IModel
     {
-         ///void Solve(string howToUpdate);
+        ///void Solve(string howToUpdate);
     }
 }

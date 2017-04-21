@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using SearchAlgorithmsLib;
 using ServerSide;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
@@ -17,7 +18,8 @@ namespace ServerSide
         /// <summary>
         /// Private Model member
         /// </summary>
-        private MazeModel Model;
+        private MazeModel model;
+        private Dictionary<string, StepSolution> stepSolutions;
 
         /// <summary>
         /// constructor that sets the model of the command
@@ -25,7 +27,8 @@ namespace ServerSide
         /// <param name="model"></param>
         public SolveMazeCommand(IModel model)
         {
-            Model = model as MazeModel;
+            this.model = model as MazeModel;
+            stepSolutions = new Dictionary<string, StepSolution>();
         }
 
         /// <summary>
@@ -37,17 +40,26 @@ namespace ServerSide
         public string Execute(string[] args, TcpClient client = null)
         {
             //Solves an existing maze
-            Solution<Position> Solution = Model.SolveMaze(args[0], int.Parse(args[1]));
+            Solution<Position> solution = model.SolveMaze(args[0], int.Parse(args[1]));
             //Creates a step by step solution
-            StepSolution StepSol = new StepSolution(args[0], Solution);
-            StepSol.CreateStepSolution();
+            StepSolution stepSol;
+            if (solution == null)
+            {
+                stepSol = stepSolutions[args[0]];
+            }
+            else
+            {
+                Console.WriteLine("Maze solved");
+                stepSol = new StepSolution(args[0], solution);
+                stepSol.CreateStepSolution();
+                stepSolutions.Add(args[0], stepSol);
+            }
             //Send to client
-            NetworkStream Stream = client.GetStream();
-            StreamWriter Writer = new StreamWriter(Stream);
-            Writer.WriteLine(StepSol.Json());
-            Writer.WriteLine("#");
-
-            Writer.Flush();
+            NetworkStream stream = client.GetStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine(stepSol.Json());
+            writer.WriteLine("#");
+            writer.Flush();
             return "CLOSE";
         }
     }
@@ -60,11 +72,11 @@ namespace ServerSide
         /// <summary>
         /// Name of maze solution
         /// </summary>
-        private string Name { get; set; }
+        private string name { get; set; }
         /// <summary>
         /// Solution of the maze
         /// </summary>
-        private Solution<Position> StepByStepSolution { get; set; }
+        private Solution<Position> stepByStepSolution { get; set; }
         /// <summary>
         /// string of solution itself
         /// </summary>
@@ -77,8 +89,8 @@ namespace ServerSide
         /// <param name="solution"> solution itself </param>
         public StepSolution(string name, Solution<Position> solution)
         {
-            Name = name;
-            StepByStepSolution = solution;
+            this.name = name;
+            stepByStepSolution = solution;
             stepSolution = "";
         }
 
@@ -87,7 +99,7 @@ namespace ServerSide
         /// </summary>
         public void CreateStepSolution()
         {
-            foreach (State<Position> pos in StepByStepSolution.Sol)
+            foreach (State<Position> pos in stepByStepSolution.Sol)
             {
                 State<Position> p = pos.CameFrom;
                 if (p != null)
@@ -118,11 +130,12 @@ namespace ServerSide
         /// <returns> the string of the solution, JSON form</returns>
         public string Json()
         {
-            JObject sol = new JObject {
-                ["Name"] = Name,
+            JObject sol = new JObject
+            {
+                ["Name"] = name,
                 ["Solution"] = stepSolution,
-                ["NodesEvaluated"] = StepByStepSolution.GetNodes(),
-        };
+                ["NodesEvaluated"] = stepByStepSolution.GetNodes(),
+            };
             return sol.ToString();
         }
     }

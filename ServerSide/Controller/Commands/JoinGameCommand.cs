@@ -15,7 +15,7 @@ namespace ServerSide
         /// <summary>
         /// Private model member
         /// </summary>
-        private MazeModel Model;
+        private MazeModel model;
 
         /// <summary>
         /// Constructor which sets the model
@@ -23,7 +23,7 @@ namespace ServerSide
         /// <param name="model"> MazeModel to work with </param>
         public JoinGameCommand(IModel model)
         {
-            Model = model as MazeModel;
+            this.model = model as MazeModel;
         }
 
         /// <summary>
@@ -39,16 +39,16 @@ namespace ServerSide
             //args[0] is name of game to join
 
             //Returns the game that this player joined
-            MazeGame game = Model.AddPlayer(args[0], client);
+            MazeGame game = model.AddPlayer(args[0], client);
             game.IsFull = true;
             List<TcpClient> Players = game.Players;
             foreach(TcpClient P in Players)
             {
-                NetworkStream Stream = P.GetStream();
-                StreamWriter Writer = new StreamWriter(Stream);
-                Writer.WriteLine(game.Maze.ToJSON());
-                Writer.WriteLine("#");
-                Writer.Flush();
+                NetworkStream stream = P.GetStream();
+                StreamWriter writer = new StreamWriter(stream);
+                writer.WriteLine(game.Maze.ToJSON());
+                writer.WriteLine("#");
+                writer.Flush();
             }
             return "DO NOT CLOSE";
         }
