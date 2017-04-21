@@ -38,7 +38,7 @@ namespace ServerSide
             Writer.WriteLine(AllGames);
             Writer.WriteLine("#");
             Writer.Flush();
-            return "CLOSE";
+            return "DO NOT CLOSE";
         }
     }
 }
