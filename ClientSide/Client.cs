@@ -76,7 +76,11 @@ namespace ClientSide
                         }
                         response += temp;
                     }
-                    Console.WriteLine(response);
+                    if (!response.Equals("DO NOT CLOSE"))
+                    {
+                        Console.WriteLine(response);
+                    }
+                    
                 }
                 string close = MyReader.ReadLine();
                 if (close.Equals("CLOSE"))
