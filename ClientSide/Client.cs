@@ -41,6 +41,7 @@ namespace ClientSide
         bool NotReadyToContinue = true;
         bool CheckClose = false;
         string newInput = "empty";
+        bool NeedsToBeClosed = false;
 
         /// <summary>
         /// Constructor for Client, initializes valid commands
@@ -58,24 +59,37 @@ namespace ClientSide
         /// <returns> returns a value to know if the user closed </returns>
         public int ReceiveUpdates(Task sendingTask)
         {
+            string temp = "";
             while (true)
             {
                 string response = MyReader.ReadLine();
                 string closeCheck = "Opponent closed game.\r\nGame ended";
-                while (MyReader.Peek() > 0)
+                if (!response.Equals("#"))
                 {
-                    response += "\r\n";
-                    response += MyReader.ReadLine();
+                    while (MyReader.Peek() > 0)
+                    {
+                        response += "\r\n";
+                        temp = MyReader.ReadLine();
+                        if (temp.Contains("#"))
+                        {
+                            Console.WriteLine("BREAKING");
+                            break;
+                        }
+                        response += temp;
+                    }
                 }
                 Console.WriteLine(response);
-                if (response.Equals(closeCheck))
+                string close = MyReader.ReadLine();
+                Console.WriteLine(close);
+
+                if (close.Equals("CLOSE"))
                 {
                     MyTcp.Close();
-                    while(NotReadyToContinue)
-                    {
-
-                    }
-                   // MyTcp = new TcpClient();
+                    OpenSocket();
+                    NotReadyToContinue = false;
+                } else
+                {
+                    NotReadyToContinue = false;
                 }
                 
                 /*  string response = MyReader.ReadLine();
@@ -99,6 +113,37 @@ namespace ClientSide
                   }*/
             }
         }
+
+
+
+        /// <summary>
+        /// Method to be able to always send messages to server
+        /// </summary>
+        public void SendUpdates()
+        {
+            while (true)
+            {
+                //if(!NotReadyToContinue)
+                    MyInput = Console.ReadLine();
+
+                if (!checkValidity(MyInput))
+                {
+                    Console.WriteLine("Wrong command, please type again");
+                    continue;
+                }
+                string[] arr = MyInput.Split(' ');
+                CommandKey = arr[0];
+               
+                MyWriter.WriteLine(MyInput);
+                MyWriter.Flush();
+                while (NotReadyToContinue)
+                {
+
+                }
+                NotReadyToContinue = true;
+            }
+        }
+
 
 
 
@@ -166,93 +211,66 @@ namespace ClientSide
         }
 
 
-        /// <summary>
-        /// Method to be able to always send messages to server
-        /// </summary>
-        public void SendUpdates()
+        /*
+        ThreadToCancel = Thread.CurrentThread;
+        string input = "";
+        bool CommandCheck = false;
+
+        while (true)
         {
-            while (true)
+            do
             {
-                MyInput = Console.ReadLine();
-                if (!checkValidity(MyInput))
+                if (newInput == "empty")
                 {
-                    Console.WriteLine("Wrong command, please type again");
-                    continue;
-                }
-                if(!MyTcp.Connected)
-                {
-                    OpenSocket();
-                    NotReadyToContinue = false;
-                    
-                }
-                MyWriter.WriteLine(MyInput);
-                MyWriter.Flush();
-            }
-        }
-
-
-
-
-                /*
-                ThreadToCancel = Thread.CurrentThread;
-                string input = "";
-                bool CommandCheck = false;
-
-                while (true)
-                {
-                    do
+                    Console.WriteLine("inside:");
+                    Console.WriteLine("CheckClose = {0}", CheckClose);
+                    Console.Write("Please insert something: ");
+                    if(CheckClose)
                     {
-                        if (newInput == "empty")
-                        {
-                            Console.WriteLine("inside:");
-                            Console.WriteLine("CheckClose = {0}", CheckClose);
-                            Console.Write("Please insert something: ");
-                            if(CheckClose)
-                            {
-                               // newInput = input;
-                                Console.WriteLine("Input before exiting: {0}", MyInput);
-                                CheckClose = false;
-                                Console.WriteLine("Returning from Send Task");
-                                return;
-                            }
-                                MyInput = Console.ReadLine();
-                            if (!checkValidity(MyInput))
-                            {
-                                Console.WriteLine("Wrong command, please type again");
-                                CommandCheck = true;
-                            }
-                            else
-                            {
-                                CommandCheck = false;
-                                if (CheckClose)
-                                {
-                                    newInput = MyInput;
-                                    Console.WriteLine("Input before exiting: {0}", newInput);
-                                    CheckClose = false;
-                                    Console.WriteLine("Returning from Send Task");
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            input = MyInput;
-                            Console.WriteLine("Last else, input is to send: {0}", input);
-                            newInput = "empty";
-                            CommandCheck = false;
-                        }
-
-                    } while (CommandCheck);
-
-                    //send input to Server
-                    MyWriter.WriteLine(input);
-                    MyWriter.Flush();
-                    if (commands[CommandKey] || CheckClose)
-                    {
+                       // newInput = input;
+                        Console.WriteLine("Input before exiting: {0}", MyInput);
+                        CheckClose = false;
+                        Console.WriteLine("Returning from Send Task");
                         return;
                     }
-                }*/
-            
+                        MyInput = Console.ReadLine();
+                    if (!checkValidity(MyInput))
+                    {
+                        Console.WriteLine("Wrong command, please type again");
+                        CommandCheck = true;
+                    }
+                    else
+                    {
+                        CommandCheck = false;
+                        if (CheckClose)
+                        {
+                            newInput = MyInput;
+                            Console.WriteLine("Input before exiting: {0}", newInput);
+                            CheckClose = false;
+                            Console.WriteLine("Returning from Send Task");
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    input = MyInput;
+                    Console.WriteLine("Last else, input is to send: {0}", input);
+                    newInput = "empty";
+                    CommandCheck = false;
+                }
+
+            } while (CommandCheck);
+
+            //send input to Server
+            MyWriter.WriteLine(input);
+            MyWriter.Flush();
+            if (commands[CommandKey] || CheckClose)
+            {
+                return;
+            }
+        }*/
+
 
 
 
@@ -285,9 +303,10 @@ namespace ClientSide
                 return val;
             });
             t2.Start();
-           
-            if(ThreadToCancel != null)
-               ThreadToCancel.Abort();
+
+            //if(ThreadToCancel != null)
+            // ThreadToCancel.Abort();
+            
             return t2.Result;
             /*if (t2.Result == 1)
             {
@@ -301,6 +320,7 @@ namespace ClientSide
                     
                 }
             }*/
+            
         }
 
         public void OpenSocket()

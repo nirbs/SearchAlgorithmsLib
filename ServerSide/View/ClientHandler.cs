@@ -43,7 +43,9 @@ namespace ServerSide
                 while (true) {
                     string commandLine = reader.ReadLine();
                     string result = Controller.ExecuteCommand(commandLine, client);
-
+                    Console.WriteLine("result from Controller: {0}", result);
+                    writer.WriteLine(result);
+                    writer.Flush();
                 }
             }).Start();
         }

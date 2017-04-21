@@ -1,6 +1,7 @@
 ﻿using MazeLib;
 using ServerSide;
 using System;
+using System.IO;
 using System.Net.Sockets;
 
 namespace ServerSide
@@ -35,7 +36,10 @@ namespace ServerSide
         {
             //split up args
             Model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Multi");
-            return "YES";
+            StreamWriter S = new StreamWriter(client.GetStream());
+            S.WriteLine("#");
+            S.Flush();
+            return "DO NOT CLOSE";
         }
     }
 }

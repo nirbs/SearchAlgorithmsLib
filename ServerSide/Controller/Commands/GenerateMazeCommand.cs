@@ -38,12 +38,13 @@ namespace ServerSide
         public string Execute(string[] args, TcpClient client = null)
         {
             Maze Maze = Model.GenerateMaze(args[0], int.Parse(args[1]), int.Parse(args[2]), client, "Single");
-            Console.WriteLine(Maze.ToJSON());
+           // Console.WriteLine(Maze.ToJSON());
             NetworkStream n = client.GetStream();
             StreamWriter s = new StreamWriter(n);
             s.WriteLine(Maze.ToJSON());
+            s.WriteLine("#");
             s.Flush();
-            return Maze.ToString();
+            return "CLOSE";
         }
     }
 }

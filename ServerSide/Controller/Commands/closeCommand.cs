@@ -45,6 +45,10 @@ namespace ServerSide
                 StreamWriter writer = new StreamWriter(Stream);
                 str = "Opponent closed game.\r\nGame ended";
                 writer.WriteLine(str);
+                writer.WriteLine("#");
+                writer.Flush();
+                writer = new StreamWriter(Stream);
+                writer.WriteLine("CLOSE");
                 writer.Flush();
             }
             
@@ -55,9 +59,10 @@ namespace ServerSide
            
             str = "closing game";
             st.WriteLine(str);
+            st.WriteLine("#");
             st.Flush();
 
-            return "YES";
+            return "CLOSE";
         }
     }
 }

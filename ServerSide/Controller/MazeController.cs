@@ -78,6 +78,8 @@ namespace ServerSide
             string[] args = arr.Skip(1).ToArray();
             ICommand command = commands[commandKey];
             string results = command.Execute(args, client);
+            Console.WriteLine("command executed");
+
             return results;
         }
 

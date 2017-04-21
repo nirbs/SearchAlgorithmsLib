@@ -45,8 +45,10 @@ namespace ServerSide
             NetworkStream Stream = client.GetStream();
             StreamWriter Writer = new StreamWriter(Stream);
             Writer.WriteLine(StepSol.Json());
+            Writer.WriteLine("#");
+
             Writer.Flush();
-            return StepSol.ToString();
+            return "CLOSE";
         }
     }
 

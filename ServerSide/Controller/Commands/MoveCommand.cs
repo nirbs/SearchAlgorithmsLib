@@ -52,10 +52,13 @@ namespace ServerSide
                 StreamWriter Writer = new StreamWriter(Stream);
                 //Turns the move into a JSON to send to opponent
                 Writer.WriteLine(jsonString);
+                Writer.WriteLine("#");
                 Writer.Flush();
             }
-            
-            return "YES";
+            StreamWriter S = new StreamWriter(client.GetStream());
+            S.WriteLine("#");
+            S.Flush();
+            return "DO NOT CLOSE";
         }
 
         /// <summary>
